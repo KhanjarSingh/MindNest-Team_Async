@@ -1,9 +1,9 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Nav from '../components/Nav';
-import Home from '../pages/Home';
-import About from '../pages/About';
-import NotFound from '../pages/NotFound';
+import Nav from '../src/components/layout/Nav';
+import Home from '../src/pages/Home';
+import About from '../src/pages/About';
+import NotFound from '../src/pages/NotFound';
 
 export default function App(){
   return (
