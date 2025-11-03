@@ -63,9 +63,26 @@ const updateUser = async (id, data) => {
 };
 
 
-const findUserByEmail = async (email) => {
-    return prisma.user.findUnique({ where: { email } });
+const findUserByEmail = async (checkingVar,checkingVariableType) => {
+    if (checkingVariableType=="email"){
+        return await prisma.user.findUnique({ where: { email:checkingVar } });
+    }
+    else if (checkingVariableType == "username"){
+        return await prisma.user.findUnique({ where: { username:checkingVar } });
+    }
 };
 
-
-module.exports = { createUser, findUser, updateUser,findUserByEmail };
+const comparePass = async (userPass,actuallPass) =>{
+    try{
+        const check = await bcrypt.compare(userPass,actuallPass)
+        if (check){
+            return true
+        }
+        return false
+    }
+    catch(err){
+        console.log(err)
+        return false
+    }
+}
+module.exports = { createUser, findUser, updateUser,findUserByEmail,comparePass };
