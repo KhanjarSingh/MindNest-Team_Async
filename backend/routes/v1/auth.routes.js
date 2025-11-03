@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {signup, getUser, updateUserController,login} = require('../../controllers/auth.controller')
+const {signup, getUser, updateUserController,login, logout} = require('../../controllers/auth.controller')
 const {verifyJWT} =require('../../controllers/jwt.controller')
 router.get('/',(req,res)=>{
     return res.send("working")
@@ -13,6 +13,8 @@ router.get('/',(req,res)=>{
 // Signup & Login Routes
 router.post('/signup', signup);
 router.post('/login', login);
+router.post('/logout', logout);
+
 
 
 // Protected Routes (need valid token)
