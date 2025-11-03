@@ -18,10 +18,10 @@ const signup = async (req, res, next) => {
         const token = await generateJWT({ id: newUser.id, email: newUser.email });
 
         res.cookie("token", token, {
-            httpOnly: true,       
-            secure: process.env.NODE_ENV === "production", 
-            sameSite: "strict",   
-            maxAge: 7 * 24 * 60 * 60 * 1000 
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         return res.status(201).json({ message: "User created successfully", user: newUser, token });
@@ -48,23 +48,25 @@ const getUser = async (req, res) => {
 
 
 const updateUserController = async (req, res) => {
-  const { id } = req.params;
-  const { username, email } = req.body;
+    const { id } = req.params;
+    const { username, email } = req.body;
 
-  if (!username && !email)
-    return res.status(400).json({ message: "At least one field (username or email) must be provided" });
+    if (!username && !email)
+        return res.status(400).json({ message: "At least one field (username or email) must be provided" });
 
-  try {
-    const updatedUser = await updateUser(id, { username, email });
-    return res.status(200).json({ message: "User updated successfully", user: updatedUser });
-  } catch (err) {
-    if (err.message === "User not found")
-      return res.status(404).json({ message: "User not found" });
-    if (err.message.includes("Email already in use"))
-      return res.status(400).json({ message: err.message });
-    return res.status(500).json({ message: "Failed to update user" });
-  }
+    try {
+        const updatedUser = await updateUser(id, { username, email });
+        return res.status(200).json({ message: "User updated successfully", user: updatedUser });
+    } catch (err) {
+        if (err.message === "User not found")
+            return res.status(404).json({ message: "User not found" });
+        if (err.message.includes("Email already in use"))
+            return res.status(400).json({ message: err.message });
+        return res.status(500).json({ message: "Failed to update user" });
+    }
 };
+
+
 
 
 const login = async (req, res, next) => {
@@ -91,10 +93,10 @@ const login = async (req, res, next) => {
         const token = await generateJWT({ id: findingUser.id, email: findingUser.email });
 
         res.cookie("token", token, {
-            httpOnly: true,       
-            secure: process.env.NODE_ENV === "production", 
-            sameSite: "strict",   
-            maxAge: 7 * 24 * 60 * 60 * 1000 
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         return res.status(200).json({
@@ -110,16 +112,16 @@ const login = async (req, res, next) => {
 
 
 const logout = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
-  return res.status(200).json({ message: "Logged out successfully" });
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+    });
+    return res.status(200).json({ message: "Logged out successfully" });
 };
 
 
 
 
 
-module.exports = { signup, getUser, updateUserController, login,logout };
+module.exports = { signup, getUser, updateUserController, login, logout };
