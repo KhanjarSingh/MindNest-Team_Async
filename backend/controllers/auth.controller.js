@@ -41,15 +41,22 @@ const getUser = async (req, res) => {
 
 
 const updateUserController = async (req, res) => {
-    const { id } = req.params;
-    const { username, email } = req.body;
+  const { id } = req.params;
+  const { username, email } = req.body;
 
-    try {
-        const updated = await updateUser(id, { username, email });
-        return res.status(200).json({ message: "User updated successfully", user: updated });
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
+  if (!username && !email)
+    return res.status(400).json({ message: "At least one field (username or email) must be provided" });
+
+  try {
+    const updatedUser = await updateUser(id, { username, email });
+    return res.status(200).json({ message: "User updated successfully", user: updatedUser });
+  } catch (err) {
+    if (err.message === "User not found")
+      return res.status(404).json({ message: "User not found" });
+    if (err.message.includes("Email already in use"))
+      return res.status(400).json({ message: err.message });
+    return res.status(500).json({ message: "Failed to update user" });
+  }
 };
 
 
