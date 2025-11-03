@@ -5,11 +5,20 @@ Base URL: `http://localhost:3000/api/v1`
 ---
 
 ## 🔐 Auth Routes (`/auth`)
-| Method | Endpoint | Description |
-|--------|-----------|-------------|
-| GET | `/auth/` | Health check |
-| POST | `/auth/signup` | Register a new user |
-| POST | `/auth/login` | Log in user and return JWT |
-| GET | `/auth/user` | Get all users |
-| GET | `/auth/user/:id` | Get user by ID |
-| PUT | `/auth/user/:id` | Update user details |
+
+| Method | Endpoint | Description | Auth Required |
+|--------|-----------|-------------|----------------|
+| **GET** | `/` | Health check (returns "working") | ❌ |
+| **POST** | `/signup` | Register a new user | ❌ |
+| **POST** | `/login` | Log in and receive a JWT token | ❌ |
+| **GET** | `/users` | Get all users | ❌ *(currently public)* |
+| **GET** | `/user/:id` | Get specific user details | ✅ JWT required |
+| **PUT** | `/user/:id` | Update user info | ✅ JWT required |
+
+---
+
+## 🔑 Example `.env` File
+
+
+
+---
