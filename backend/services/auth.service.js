@@ -45,22 +45,35 @@ const findUser = async (id) => {
 
 const updateUser = async (id, data) => {
   try {
-    const existingUser = await prisma.user.findUnique({ where: { id: Number(id) } });
+    const userId = Number(id);
+    const existingUser = await prisma.user.findUnique({ where: { id: userId } });
+
     if (!existingUser) {
       throw new Error("User not found");
     }
 
+    if (data.email) {
+      const emailUsed = await prisma.user.findUnique({
+        where: { email: data.email },
+      });
+      if (emailUsed && emailUsed.id !== userId) {
+        throw new Error("Email already in use by another user");
+      }
+    }
+
     const updatedUser = await prisma.user.update({
-      where: { id: Number(id) },
+      where: { id: userId },
       data,
     });
 
     return updatedUser;
   } catch (err) {
     console.error("Error updating user:", err);
-    throw new Error("Could not update user");
+    throw new Error(err.message || "Could not update user");
   }
 };
+
+
 
 
 const findUserByEmail = async (checkingVar,checkingVariableType) => {
@@ -72,17 +85,13 @@ const findUserByEmail = async (checkingVar,checkingVariableType) => {
     }
 };
 
-const comparePass = async (userPass,actuallPass) =>{
-    try{
-        const check = await bcrypt.compare(userPass,actuallPass)
-        if (check){
-            return true
-        }
-        return false
-    }
-    catch(err){
-        console.log(err)
-        return false
-    }
-}
+const comparePass = async (userPass, actualPass) => {
+  try {
+    return await bcrypt.compare(userPass, actualPass);
+  } catch (err) {
+    console.error("Password comparison error:", err);
+    return false;
+  }
+};
+
 module.exports = { createUser, findUser, updateUser,findUserByEmail,comparePass };
