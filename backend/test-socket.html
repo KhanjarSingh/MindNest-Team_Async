@@ -2,35 +2,133 @@
 <html>
 <head>
     <title>Chat Test</title>
-    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <style>
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .chat-box { height: 400px; border: 1px solid #ccc; overflow-y: auto; margin: 20px 0; padding: 10px; }
+        .message { margin: 5px; padding: 5px; }
+        .sent { background: #e3f2fd; text-align: right; }
+        .received { background: #f5f5f5; }
+        .input-group { display: flex; gap: 10px; margin: 10px 0; }
+        .login-section { margin-bottom: 20px; }
+    </style>
 </head>
 <body>
-    <div id="messages"></div>
-    <input type="text" id="messageInput" />
-    <button onclick="sendMessage()">Send</button>
+    <div class="container">
+        <!-- Login Section -->
+        <div id="loginSection" class="login-section">
+            <h2>Login to Test Chat</h2>
+            <div class="input-group">
+                <input type="email" id="emailInput" placeholder="Email" />
+                <input type="password" id="passwordInput" placeholder="Password" />
+                <button onclick="login()">Login</button>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div id="chatSection" style="display: none;">
+            <h2>Chat Test</h2>
+            <div class="input-group">
+                <input type="number" id="receiverId" placeholder="Receiver ID" />
+                <button onclick="loadHistory()">Load Chat History</button>
+            </div>
+            <div id="messages" class="chat-box"></div>
+            <div class="input-group">
+                <input type="text" id="messageInput" placeholder="Type a message..." />
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const socket = io('http://localhost:3000', {
-            withCredentials: true
-        });
+        let currentUser = null;
+        let socket = null;
+        let authToken = null;
 
-        socket.on('connect', () => {
-            console.log('Connected to server');
-            // Join room with user ID
-            socket.emit('join', '1'); // Replace 1 with actual user ID
-        });
+        async function login() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
 
-        socket.on('receiveMessage', (message) => {
+            try {
+                const response = await fetch('http://localhost:3000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email:email, password:password })
+                });
+                const data = await response.json();
+                
+                if (data.token) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('chatSection').style.display = 'block';
+                    initializeSocket();
+                }
+            } catch (error) {
+                console.error('Login failed:', error);
+                alert('Login failed');
+            }
+        }
+
+        function initializeSocket() {
+            socket = io('http://localhost:3000', {
+                withCredentials: true,
+                auth: { token: authToken }
+            });
+
+            socket.on('connect', () => {
+                console.log('Connected to server');
+                socket.emit('join', currentUser.id);
+            });
+
+            socket.on('receiveMessage', (message) => {
+                appendMessage(message, false);
+            });
+        }
+
+        async function loadHistory() {
+            const receiverId = document.getElementById('receiverId').value;
+            try {
+                const response = await fetch(`http://localhost:3000/api/v1/chat/history/${receiverId}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML = '';
+                data.data.forEach(msg => {
+                    appendMessage(msg, msg.senderId === currentUser.id);
+                });
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+
+        function appendMessage(message, isSent) {
             const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<p>${message.content}</p>`;
-        });
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+            messageDiv.textContent = message.content;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
 
         function sendMessage() {
             const content = document.getElementById('messageInput').value;
-            socket.emit('sendMessage', {
-                receiverId: 2, // Replace with actual receiver ID
-                content: content
+            const receiverId = parseInt(document.getElementById('receiverId').value);
+            
+            if (!content || !receiverId) return;
+
+            fetch('http://localhost:3000/api/v1/chat/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ receiverId, content })
             });
+
+            appendMessage({ content, senderId: currentUser.id }, true);
             document.getElementById('messageInput').value = '';
         }
     </script>

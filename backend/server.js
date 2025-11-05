@@ -6,14 +6,15 @@ const routes = require('./routes');
 const cookieParser = require('cookie-parser');
 const http = require('http');
 const socket = require('socket.io');
+const { createMessage } = require('./services/chat.service');
 dotenv.config()
 
 const app = express()
 const port = process.env.PORT || 3000
-server = http.createServer(app);
+const server = http.createServer(app);
 const io = socket(server, {
     cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:3000",
+        origin: process.env.FRONTEND_URL || "http://localhost:3000",
         credentials: true
     }
 });
@@ -31,7 +32,9 @@ app.use(cors({
 app.use('/api', routes);
 
 io.on('connection', (socket) => {
+    
     socket.on('join', (userId) => {
+        socket.userId = userId;
         socket.join(userId);
     });
 
