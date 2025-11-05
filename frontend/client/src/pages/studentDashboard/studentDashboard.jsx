@@ -25,12 +25,16 @@ export default function StudentDashboard() {
   const prevSlide = () => {
     setCurrentIndex(currentIndex === 0 ? heroImages.length - 1 : currentIndex - 1);
   };
+
+  // 1. FIX: Timer leak and stale closure resolved.
   useEffect(() => {
     const timer = setInterval(() => {
-      nextSlide();
-    }, 5000); 
+      setCurrentIndex((prevIndex) =>
+        prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000);
     return () => clearInterval(timer);
-  }, [currentIndex]);
+  }, []); 
 
   return (
     <div>
@@ -40,16 +44,18 @@ export default function StudentDashboard() {
 
         <section className="hero-slider">
           <div className="hero-image-container">
+            {/* 2. FIX: Use index as key */}
             {heroImages.map((src, index) => (
-              <img key={src} src={src} alt={`Slide ${index + 1}`} className={index === currentIndex ? "hero-image active" : "hero-image"}/>
+              <img key={index} src={src} alt={`Slide ${index + 1}`} className={index === currentIndex ? "hero-image active" : "hero-image"}/>
             ))}
           </div>
           <div className="hero-content">
             <h1>Welcome, Student!</h1>
             <p>Explore hackathons and connect with the community.</p>
           </div>
-          <button onClick={prevSlide} className="slider-btn prev-btn">&lt;</button>
-          <button onClick={nextSlide} className="slider-btn next-btn">&gt;</button>
+          {}
+          <button onClick={prevSlide} className="slider-btn prev-btn">‹</button>
+          <button onClick={nextSlide} className="slider-btn next-btn">›</button>
         </section>
 
         <section className="cta-section">
