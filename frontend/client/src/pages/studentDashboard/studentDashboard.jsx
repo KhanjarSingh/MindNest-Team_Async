@@ -60,7 +60,7 @@ export default function StudentDashboard() {
 
         <section className="cta-section">
           
-          <Link to="/" className="cta-link-wrapper">
+          <Link to="/studentdashboard/addidea" className="cta-link-wrapper">
             <div className="cta-left">
               <div className="cta-plus-button">+</div>
               <p className="cta-text">Add your ideas</p>

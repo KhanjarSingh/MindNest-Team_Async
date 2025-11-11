@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 import StudentDashboard from './pages/studentDashboard/studentDashboard';
-
+import AddIdea from './pages/studentDashboard/addIdea';
 
 export default function App(){
   return (
@@ -13,8 +13,9 @@ export default function App(){
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="*" element={<NotFound />} />
           <Route path="/studentdashboard" element={<StudentDashboard />} />
+          <Route path="/studentdashboard/addidea" element={<AddIdea />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
     </>
