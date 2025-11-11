@@ -49,3 +49,16 @@ model Chat {
 
   @@map("chats")
 }
+
+model Idea {
+  id           String   @id @default(cuid())
+  title        String
+  pitch        String   @db.Text
+  description  String   @db.Text
+  demoLink     String?
+  pitchDeckUrl String?
+  ppt_Url      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
