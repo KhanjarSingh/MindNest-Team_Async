@@ -27,6 +27,11 @@ app.use(cors({
   credentials: true,                
 }));
 
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log('Request body:', req.body);
+  next();
+});
 
 app.use('/api', routes);
 
@@ -49,6 +54,17 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
+    });
+});
+
+app.use((err, req, res, next) => {
+    console.error('=== GLOBAL ERROR HANDLER ===');
+    console.error('Error:', err);
+    console.error('Error message:', err.message);
+    console.error('Error stack:', err.stack);
+    res.status(500).json({ 
+        message: 'Internal server error', 
+        error: err.message 
     });
 });
 
