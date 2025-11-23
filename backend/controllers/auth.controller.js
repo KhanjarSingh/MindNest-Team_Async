@@ -2,10 +2,20 @@ const { createUser, findUser, updateUser, findUserByEmail, comparePass } = requi
 const { generateJWT } = require('./jwt.controller');
 
 const signup = async (req, res, next) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, role = 'PARTICIPANT', adminSecret } = req.body;
 
     if (!username || !email || !password) {
         return res.status(400).json({ message: "All fields (username, email, password) are required" });
+    }
+
+    // Validate role
+    if (role && !['PARTICIPANT', 'ADMIN'].includes(role)) {
+        return res.status(400).json({ message: "Invalid role. Must be PARTICIPANT or ADMIN" });
+    }
+
+    // Validate admin secret if role is ADMIN
+    if (role === 'ADMIN' && !adminSecret) {
+        return res.status(400).json({ message: "Admin secret is required for admin registration" });
     }
 
     try {
@@ -14,8 +24,8 @@ const signup = async (req, res, next) => {
             return res.status(400).json({ message: "User already exists with this email" });
         }
 
-        const newUser = await createUser({ username, email, password });
-        const token = await generateJWT({ id: newUser.id, email: newUser.email });
+        const newUser = await createUser({ username, email, password, role, adminSecret });
+        const token = await generateJWT({ id: newUser.id, email: newUser.email, role: newUser.role });
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -24,10 +34,14 @@ const signup = async (req, res, next) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        return res.status(201).json({ message: "User created successfully", user: newUser, token });
+        return res.status(201).json({ 
+            message: "User created successfully", 
+            user: { id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role },
+            token 
+        });
     } catch (err) {
         console.error("Signup error:", err.message);
-        return res.status(500).json({ message: err.message || "Failed to create user" });
+        return res.status(400).json({ message: err.message || "Failed to create user" });
     }
 };
 
@@ -44,7 +58,6 @@ const getUser = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
-
 
 
 const updateUserController = async (req, res) => {
@@ -65,8 +78,6 @@ const updateUserController = async (req, res) => {
         return res.status(500).json({ message: "Failed to update user" });
     }
 };
-
-
 
 
 const login = async (req, res, next) => {
@@ -90,7 +101,7 @@ const login = async (req, res, next) => {
             return res.status(400).json({ message: "Incorrect password" });
         }
 
-        const token = await generateJWT({ id: findingUser.id, email: findingUser.email });
+        const token = await generateJWT({ id: findingUser.id, email: findingUser.email, role: findingUser.role });
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -101,12 +112,12 @@ const login = async (req, res, next) => {
 
         return res.status(200).json({
             message: "User successfully logged in",
-            user: findingUser,
+            user: { id: findingUser.id, username: findingUser.username, email: findingUser.email, role: findingUser.role },
             token
         });
     } catch (err) {
         console.error("Login error:", err.message);
-        return res.status(500).json({ message: err.message || "Failed to create user" });
+        return res.status(500).json({ message: err.message || "Failed to login" });
     }
 };
 
@@ -119,9 +130,5 @@ const logout = (req, res) => {
     });
     return res.status(200).json({ message: "Logged out successfully" });
 };
-
-
-
-
 
 module.exports = { signup, getUser, updateUserController, login, logout };
