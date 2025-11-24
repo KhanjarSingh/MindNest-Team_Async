@@ -48,3 +48,4 @@ Returns chat history between authenticated user and user with ID 2
 
 
 ---
+

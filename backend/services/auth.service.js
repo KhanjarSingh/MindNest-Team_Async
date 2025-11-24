@@ -1,11 +1,19 @@
 const { prisma } = require('../config/prisma');
 const bcrypt = require('bcrypt');
 
+const ADMIN_SECRET = 'admin123';
 
-const createUser = async ({ username, email, password }) => {
+const createUser = async ({ username, email, password, role = 'PARTICIPANT', adminSecret }) => {
   const saltRounds = 10;
 
   try {
+    // Validate admin secret if role is ADMIN
+    if (role === 'ADMIN') {
+      if (!adminSecret || adminSecret !== ADMIN_SECRET) {
+        throw new Error('Invalid admin secret');
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUser = await prisma.user.create({
@@ -13,14 +21,14 @@ const createUser = async ({ username, email, password }) => {
         username,
         email,
         password: hashedPassword,
-        role_id: 1,
+        role: role.toUpperCase(),
       },
     });
 
     return newUser;
   } catch (err) {
     console.error("Error creating user:", err);
-    throw new Error("Failed to create user");
+    throw new Error(err.message || "Failed to create user");
   }
 };
 
