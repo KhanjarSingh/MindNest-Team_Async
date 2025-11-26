@@ -58,14 +58,8 @@ export default function SignIn() {
     setLoading(true);
 
     try {
-      const response = await loginUser(formData);
-      
-      // Redirect based on role
-      if (response.user.role === 'ADMIN') {
-        navigate('/admin-dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      await loginUser(formData);
+      navigate('/studentdashboard/addidea');
     } catch (err) {
       setError(err.message);
     } finally {

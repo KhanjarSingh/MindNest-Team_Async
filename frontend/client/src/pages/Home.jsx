@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import Navigation from "../components/Navigation";
+import Hero from "../components/Hero";
+import About from "../components/About";
+import Benefits from "../components/Benefits";
+import ApplicationCTA from "../components/ApplicationCTA";
+import Footer from "../components/Footer";
 
-export default function Home(){
-  const [msg, setMsg] = useState('loading...');
-  useEffect(() => {
-    fetch('/api/hello')
-      .then(res => res.json())
-      .then(data => setMsg(data.message))
-      .catch(() => setMsg('Could not reach API'));
-  }, []);
+export default function Home() {
   return (
-    <div>
-      <h1>Home of the MindNest</h1>
-      <p>API says: {msg}</p>
-      <h2>Work in Progress</h2>
+    <div className="min-h-screen">
+      <Navigation />
+      <Hero />
+      <About />
+      <Benefits />
+      <ApplicationCTA />
+      <Footer />
     </div>
   );
 }

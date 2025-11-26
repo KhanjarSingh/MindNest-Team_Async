@@ -8,12 +8,12 @@ import AddIdea from './pages/studentDashboard/addIdea';
 import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SignUp';
 import AdminDashboard from './pages/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App(){
   return (
     <>
-      <main style={{ padding: 20 }}>
-        <Routes>
+      <Routes>
           {/* Auth Routes */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
@@ -31,7 +31,6 @@ export default function App(){
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </main>
     </>
   );
 }
