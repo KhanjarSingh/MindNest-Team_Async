@@ -14,6 +14,12 @@ const createUser = async ({ username, email, password, role = 'PARTICIPANT', adm
       }
     }
 
+    // Check if username already exists
+    const existingUsername = await prisma.user.findUnique({ where: { username } });
+    if (existingUsername) {
+      throw new Error('Username already exists');
+    }
+
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUser = await prisma.user.create({
@@ -21,7 +27,7 @@ const createUser = async ({ username, email, password, role = 'PARTICIPANT', adm
         username,
         email,
         password: hashedPassword,
-        role: role.toUpperCase(),
+        role,
       },
     });
 

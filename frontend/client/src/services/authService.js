@@ -20,12 +20,12 @@ export const signupUser = async (data) => {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Sign up failed');
-    }
+    const text = await response.text();
+    const result = text ? JSON.parse(text) : {};
 
-    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Sign up failed');
+    }
 
     // Store JWT token and role in localStorage
     if (result.token) {
@@ -48,6 +48,7 @@ export const signupUser = async (data) => {
  */
 export const loginUser = async (data) => {
   try {
+    console.log('Login request:', data);
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: {
@@ -56,12 +57,14 @@ export const loginUser = async (data) => {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Login failed');
-    }
+    console.log('Response status:', response.status);
+    const text = await response.text();
+    console.log('Response text:', text);
+    const result = text ? JSON.parse(text) : {};
 
-    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Login failed');
+    }
 
     // Store JWT token and role in localStorage
     if (result.token) {
