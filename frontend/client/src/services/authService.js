@@ -21,10 +21,17 @@ export const signupUser = async (data) => {
     });
 
     const text = await response.text();
-    const result = text ? JSON.parse(text) : {};
+    let result = {};
+    
+    try {
+      result = text ? JSON.parse(text) : {};
+    } catch (parseError) {
+      console.error('Failed to parse response:', text);
+      throw new Error('Server returned invalid response. Please check if the backend is running.');
+    }
 
     if (!response.ok) {
-      throw new Error(result.message || 'Sign up failed');
+      throw new Error(result.message || `Sign up failed with status ${response.status}`);
     }
 
     // Store JWT token and role in localStorage
@@ -37,6 +44,9 @@ export const signupUser = async (data) => {
 
     return result;
   } catch (error) {
+    if (error.message.includes('fetch')) {
+      throw new Error('Cannot connect to server. Please ensure the backend is running on port 3002.');
+    }
     throw new Error(error.message || 'An error occurred during sign up');
   }
 };
@@ -60,10 +70,17 @@ export const loginUser = async (data) => {
     console.log('Response status:', response.status);
     const text = await response.text();
     console.log('Response text:', text);
-    const result = text ? JSON.parse(text) : {};
+    let result = {};
+    
+    try {
+      result = text ? JSON.parse(text) : {};
+    } catch (parseError) {
+      console.error('Failed to parse response:', text);
+      throw new Error('Server returned invalid response. Please check if the backend is running.');
+    }
 
     if (!response.ok) {
-      throw new Error(result.message || 'Login failed');
+      throw new Error(result.message || `Login failed with status ${response.status}`);
     }
 
     // Store JWT token and role in localStorage
@@ -76,6 +93,9 @@ export const loginUser = async (data) => {
 
     return result;
   } catch (error) {
+    if (error.message.includes('fetch')) {
+      throw new Error('Cannot connect to server. Please ensure the backend is running on port 3002.');
+    }
     throw new Error(error.message || 'An error occurred during login');
   }
 };
