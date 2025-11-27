@@ -18,6 +18,7 @@ const Navigation = () => {
     { label: "Home", href: "#home" },
     { label: "About", href: "#about" },
     { label: "Benefits", href: "#benefits" },
+    { label: "Upcoming hackathons", href: "/hackathons", isRoute: true },
     { label: "Apply", href: "#apply" },
   ];
 
@@ -40,13 +41,23 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:scale-105"
-              >
-                {item.label}
-              </a>
+              item.isRoute ? (
+                <button
+                  key={item.label}
+                  onClick={() => navigate(item.href)}
+                  className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:scale-105"
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:scale-105"
+                >
+                  {item.label}
+                </a>
+              )
             ))}
             {authenticated ? (
               <Button onClick={handleLogout} variant="outline" className="rounded-full shadow-lg hover:shadow-xl transition-all">
@@ -77,14 +88,24 @@ const Navigation = () => {
           <div className="md:hidden pt-6 pb-2 animate-fade-in">
             <div className="flex flex-col space-y-4 p-4 rounded-2xl bg-background/50 backdrop-blur-md border border-white/10">
               {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:translate-x-2"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.label}
-                </a>
+                item.isRoute ? (
+                  <button
+                    key={item.label}
+                    onClick={() => { navigate(item.href); setIsOpen(false); }}
+                    className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:translate-x-2 text-left"
+                  >
+                    {item.label}
+                  </button>
+                ) : (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:translate-x-2"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                )
               ))}
               {authenticated ? (
                 <Button onClick={handleLogout} variant="outline" className="rounded-full w-full shadow-lg">
