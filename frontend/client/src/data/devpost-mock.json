@@ -1,0 +1,44 @@
+{
+  "hackathons": [
+    {
+      "id": "mock-1",
+      "title": "Global AI Challenge 2025",
+      "url": "https://example.com/ai-challenge",
+      "thumbnail_url": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop",
+      "submission_period_dates": "2025-02-15T00:00:00Z",
+      "location": {
+        "city": "San Francisco",
+        "state": "CA", 
+        "country": "USA"
+      },
+      "online": false,
+      "hybrid": true
+    },
+    {
+      "id": "mock-2", 
+      "title": "Virtual Blockchain Hackathon",
+      "url": "https://example.com/blockchain-hack",
+      "thumbnail_url": "//images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop",
+      "submission_period_dates": "2025-03-01T00:00:00Z",
+      "location": {
+        "country": "Global"
+      },
+      "online": true,
+      "hybrid": false
+    },
+    {
+      "id": "mock-3",
+      "title": "Local Climate Tech Meetup", 
+      "url": null,
+      "thumbnail_url": null,
+      "submission_period_dates": "2025-01-25T00:00:00Z",
+      "location": {
+        "city": "Austin",
+        "state": "TX",
+        "country": "USA"
+      },
+      "online": false,
+      "hybrid": false
+    }
+  ]
+}
