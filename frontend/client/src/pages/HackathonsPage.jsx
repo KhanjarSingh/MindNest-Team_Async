@@ -267,55 +267,40 @@ const HackathonsPage = () => {
         </div>
 
         <div className="mb-12">
-          <div className="bg-card rounded-2xl shadow-xl p-6 border border-border backdrop-blur-sm">
-            <div className="space-y-4 md:space-y-0 md:flex md:gap-4 md:items-end">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                  <Search className="w-4 h-4" />
-                  Search
-                </label>
+          <div className="bg-card/50 backdrop-blur-xl rounded-3xl shadow-lg p-6 border border-border/50">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder="Search hackathons..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-3 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 bg-background hover:bg-muted/50"
+                  className="w-full pl-12 pr-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                 />
               </div>
               
-              <div className="w-full md:w-48">
-                <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                  <Filter className="w-4 h-4" />
-                  Type
-                </label>
-                <select 
-                  value={typeFilter} 
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                  className="w-full px-4 py-3 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 bg-background hover:bg-muted/50"
-                >
-                  <option value="all">All Types</option>
-                  <option value="virtual">Virtual</option>
-                  <option value="offline">Offline</option>
-                  <option value="hybrid">Hybrid</option>
-                </select>
-              </div>
+              <select 
+                value={typeFilter} 
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all md:w-40"
+              >
+                <option value="all">All Types</option>
+                <option value="virtual">Virtual</option>
+                <option value="offline">Offline</option>
+                <option value="hybrid">Hybrid</option>
+              </select>
 
-              <div className="w-full md:w-48">
-                <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                  <Globe className="w-4 h-4" />
-                  Country
-                </label>
-                <select 
-                  value={countryFilter} 
-                  onChange={(e) => setCountryFilter(e.target.value)}
-                  className="w-full px-4 py-3 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 bg-background hover:bg-muted/50"
-                >
-                  <option value="">All Countries</option>
-                  {countries.map(country => (
-                    <option key={country} value={country}>{country}</option>
-                  ))}
-                </select>
-              </div>
+              <select 
+                value={countryFilter} 
+                onChange={(e) => setCountryFilter(e.target.value)}
+                className="px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all md:w-48"
+              >
+                <option value="">All Countries</option>
+                {countries.map(country => (
+                  <option key={country} value={country}>{country}</option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
@@ -328,15 +313,15 @@ const HackathonsPage = () => {
             </p>
             <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
               <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 bg-primary rounded-full"></div>
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 <span>Virtual</span>
               </div>
               <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 bg-secondary rounded-full"></div>
+                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
                 <span>Hybrid</span>
               </div>
               <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 bg-accent rounded-full"></div>
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                 <span>Offline</span>
               </div>
             </div>
@@ -368,9 +353,9 @@ const HackathonsPage = () => {
                   />
                   <div className="absolute top-3 right-3">
                     <span className={`px-3 py-1 text-xs font-bold rounded-full shadow-lg flex items-center gap-1 ${
-                      hackathon.virtual ? 'bg-primary text-primary-foreground' :
-                      hackathon.hybrid ? 'bg-secondary text-secondary-foreground' :
-                      'bg-accent text-accent-foreground'
+                      hackathon.virtual ? 'bg-green-500 text-white' :
+                      hackathon.hybrid ? 'bg-orange-500 text-white' :
+                      'bg-blue-500 text-white'
                     }`}>
                       {hackathon.virtual ? (
                         <><Globe className="w-3 h-3" /> Virtual</>
