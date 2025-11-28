@@ -8,9 +8,10 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-    PARTICIPANT
-    ADMIN
+model Role {
+    id    Int    @id
+    name  String @unique
+    users User[]
 }
 
 model User {
@@ -18,7 +19,8 @@ model User {
     username         String    @unique
     email            String    @unique
     password         String
-    role             UserRole  @default(PARTICIPANT)
+    roleId           Int       @default(0)
+    role             Role      @relation(fields: [roleId], references: [id])
     is_verified      Boolean   @default(false)
     created_at       DateTime  @default(now())
     last_login       DateTime?
