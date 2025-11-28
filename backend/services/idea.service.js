@@ -1,7 +1,7 @@
 // Make sure to import your configured prisma client
 // You likely have this in /config/prisma.js or /client.js
 // I'm assuming it's exported as 'prisma'
-const { prisma } = require('../config/prisma.js'); // Adjust this import path!
+const prisma = require('../config/prisma.js');
 
 /**
  * Creates a new idea in the database.

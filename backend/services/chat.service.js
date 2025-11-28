@@ -1,4 +1,4 @@
-const { prisma } = require('../config/prisma');
+const prisma = require('../config/prisma');
 
 const createMessage = async (senderId, receiverId, content) => {
     try {
