@@ -31,7 +31,7 @@ export default function Nav() {
   return (
     <nav className={isScrolled ? 'navbar scrolled' : 'navbar'}>
       <div className="navbar-left">
-        <Link to="/hackathons" className="navbar-link">Hackathons</Link>
+        <Link to="/hackathons" className="navbar-link">Upcoming hackathons</Link>
         <Link to="/community" className="navbar-link">Community</Link>
         <Link to="/about" className="navbar-link">About Us</Link>
         <Link to="/contact" className="navbar-link">Contact</Link>

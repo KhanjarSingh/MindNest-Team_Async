@@ -8,12 +8,15 @@ import AddIdea from './pages/studentDashboard/addIdea';
 import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SignUp';
 import AdminDashboard from './pages/AdminDashboard';
+import HackathonsPage from './pages/HackathonsPage';
+import TestPage from './pages/TestPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import { Toaster } from '@/components/ui/toaster';
 
 export default function App(){
   return (
     <>
-      <main style={{ padding: 20 }}>
-        <Routes>
+      <Routes>
           {/* Auth Routes */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
@@ -21,6 +24,8 @@ export default function App(){
           {/* Main Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/hackathons" element={<HackathonsPage />} />
+          <Route path="/test" element={<TestPage />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/studentdashboard" element={<StudentDashboard />} />
           <Route path="/studentdashboard/addidea" element={<AddIdea />} />
@@ -31,7 +36,7 @@ export default function App(){
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </main>
+      <Toaster />
     </>
   );
 }

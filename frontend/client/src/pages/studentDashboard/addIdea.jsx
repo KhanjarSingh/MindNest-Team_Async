@@ -1,82 +1,7 @@
 import React, { useState } from 'react';
-// Using axios is a bit cleaner for requests, but fetch is fine too.
-// If you don't have axios, run: npm install axios
 import axios from 'axios';
-// 1. Removed the CSS import: import './addIdea.css';
-
-// 2. Added the styles object back inside the component file
-const styles = {
-  container: {
-    maxWidth: '600px',
-    margin: '2rem auto',
-    padding: '2rem',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-    fontFamily: 'Arial, sans-serif',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  label: {
-    marginBottom: '0.5rem',
-    fontWeight: '600',
-    color: '#333',
-  },
-  input: {
-    padding: '0.75rem',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    fontFamily: 'Arial, sans-serif',
-  },
-  textarea: {
-    padding: '0.75rem',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    minHeight: '100px',
-    fontFamily: 'Arial, sans-serif',
-    resize: 'vertical',
-  },
-  button: {
-    padding: '0.75rem',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-    cursor: 'not-allowed',
-  },
-  message: {
-    textAlign: 'center',
-    padding: '1rem',
-    borderRadius: '4px',
-    marginTop: '1rem',
-  },
-  successMessage: {
-    backgroundColor: '#d4edda',
-    color: '#155724',
-    border: '1px solid #c3e6cb',
-  },
-  errorMessage: {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
-    border: '1px solid #f5c6cb',
-  }
-};
+import { Button } from '@/components/ui/button';
+import { Sparkles, Lightbulb } from 'lucide-react';
 
 
 const AddIdea = () => {
@@ -139,106 +64,153 @@ const AddIdea = () => {
 
 
   return (
-    <div style={styles.container}>
-      <h2>Submit Your New Idea</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <div style={styles.formGroup}>
-          <label htmlFor="title" style={styles.label}>Title *</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="pitch" style={styles.label}>Pitch *</label>
-          <textarea
-            id="pitch"
-            name="pitch"
-            value={formData.pitch}
-            onChange={handleChange}
-            placeholder="A short summary of your idea (1-2 sentences)"
-            required
-            style={styles.textarea}
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="description" style={styles.label}>Description *</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Describe your idea in detail"
-            required
-            style={styles.textarea}
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="demoLink" style={styles.label}>Demo Link (e.g., GitHub)</label>
-          <input
-            type="url"
-            id="demoLink"
-            name="demoLink"
-            value={formData.demoLink}
-            onChange={handleChange}
-            placeholder="https://github.com/your-project"
-            style={styles.input}
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="pitchDeckUrl" style={styles.label}>Pitch Deck URL (e.g., Google Slides)</label>
-          <input
-            type="url"
-            id="pitchDeckUrl"
-            name="pitchDeckUrl"
-            value={formData.pitchDeckUrl}
-            onChange={handleChange}
-            placeholder="https://docs.google.com/..."
-            style={styles.input}
-          />
-        </div>
-        
-        <div style={styles.formGroup}>
-          <label htmlFor="ppt_Url" style={styles.label}>PPT URL (Optional)</label>
-          <input
-            type="url"
-            id="ppt_Url"
-            name="ppt_Url"
-            value={formData.ppt_Url}
-            onChange={handleChange}
-            style={styles.input}
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          style={{...styles.button, ...(isLoading ? styles.buttonDisabled : {})}}
-          disabled={isLoading} 
-        >
-          {isLoading ? 'Submitting...' : 'Submit Idea'}
-        </button>
-
-        {}
-        {message && (
-          <div style={{...styles.message, ...styles.successMessage}}>
-            {message}
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20 mb-4">
+            <Lightbulb className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">SHARE YOUR VISION</span>
           </div>
-        )}
-        {error && (
-          <div style={{...styles.message, ...styles.errorMessage}}>
-            {error}
-          </div>
-        )}
-      </form>
+          <h1 className="text-4xl font-bold text-foreground mb-2">Submit Your Idea</h1>
+          <p className="text-muted-foreground">Tell us about your innovative project and join our community</p>
+        </div>
+
+        {/* Form Card */}
+        <div className="bg-card border border-border rounded-3xl p-8 shadow-lg">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Title */}
+            <div className="space-y-2">
+              <label htmlFor="title" className="text-sm font-semibold text-foreground flex items-center gap-2">
+                Title <span className="text-primary">*</span>
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                placeholder="Enter your idea title"
+              />
+            </div>
+
+            {/* Pitch */}
+            <div className="space-y-2">
+              <label htmlFor="pitch" className="text-sm font-semibold text-foreground flex items-center gap-2">
+                Pitch <span className="text-primary">*</span>
+              </label>
+              <textarea
+                id="pitch"
+                name="pitch"
+                value={formData.pitch}
+                onChange={handleChange}
+                placeholder="A short summary of your idea (1-2 sentences)"
+                required
+                rows={3}
+                className="w-full px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+              />
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <label htmlFor="description" className="text-sm font-semibold text-foreground flex items-center gap-2">
+                Description <span className="text-primary">*</span>
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Describe your idea in detail"
+                required
+                rows={5}
+                className="w-full px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+              />
+            </div>
+
+            {/* Links Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="demoLink" className="text-sm font-semibold text-foreground">
+                  Demo Link
+                </label>
+                <input
+                  type="url"
+                  id="demoLink"
+                  name="demoLink"
+                  value={formData.demoLink}
+                  onChange={handleChange}
+                  placeholder="https://github.com/your-project"
+                  className="w-full px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="pitchDeckUrl" className="text-sm font-semibold text-foreground">
+                  Pitch Deck URL
+                </label>
+                <input
+                  type="url"
+                  id="pitchDeckUrl"
+                  name="pitchDeckUrl"
+                  value={formData.pitchDeckUrl}
+                  onChange={handleChange}
+                  placeholder="https://docs.google.com/..."
+                  className="w-full px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="ppt_Url" className="text-sm font-semibold text-foreground">
+                PPT URL (Optional)
+              </label>
+              <input
+                type="url"
+                id="ppt_Url"
+                name="ppt_Url"
+                value={formData.ppt_Url}
+                onChange={handleChange}
+                placeholder="https://..."
+                className="w-full px-4 py-3 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="w-full rounded-full py-6 text-base font-semibold"
+            >
+              {isLoading ? (
+                <>
+                  <Sparkles className="w-5 h-5 mr-2 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Submit Idea
+                </>
+              )}
+            </Button>
+
+            {/* Messages */}
+            {message && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-green-800 text-center">
+                {message}
+              </div>
+            )}
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-center">
+                {error}
+              </div>
+            )}
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

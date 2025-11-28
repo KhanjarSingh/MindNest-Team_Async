@@ -1,0 +1,13 @@
+{
+  "name": "devpost-proxy",
+  "version": "1.0.0",
+  "description": "Express proxy for Devpost API",
+  "main": "proxy.js",
+  "scripts": {
+    "start": "node proxy.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  }
+}
