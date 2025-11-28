@@ -4,20 +4,7 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create roles
-  await prisma.role.upsert({
-    where: { id: 0 },
-    update: {},
-    create: { id: 0, name: 'STUDENT' },
-  });
-
-  await prisma.role.upsert({
-    where: { id: 1 },
-    update: {},
-    create: { id: 1, name: 'INSTRUCTOR' },
-  });
-
-  // Create admin user
+  // Create admin user (roles already exist from migration)
   const adminPassword = await bcrypt.hash('admin123', 10);
   
   const admin = await prisma.user.upsert({
@@ -32,7 +19,7 @@ async function main() {
     },
   });
 
-  console.log('Seeded roles and admin user:', admin);
+  console.log('Seeded admin user:', admin);
 }
 
 main()

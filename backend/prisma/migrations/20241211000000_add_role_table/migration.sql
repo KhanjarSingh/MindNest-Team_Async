@@ -7,6 +7,10 @@ CREATE TABLE `Role` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- Insert default roles
+INSERT INTO `Role` (`id`, `name`) VALUES (0, 'STUDENT');
+INSERT INTO `Role` (`id`, `name`) VALUES (1, 'INSTRUCTOR');
+
 -- AlterTable
 ALTER TABLE `User` ADD COLUMN `roleId` INTEGER NOT NULL DEFAULT 0;
 
