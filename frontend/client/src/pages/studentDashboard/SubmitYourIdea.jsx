@@ -66,8 +66,10 @@ const AddIdea = () => {
 
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8 relative">
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-[600px] bg-[url('/Submit-Your-Idea-bg.jpeg')] bg-no-repeat opacity-10 pointer-events-none" style={{backgroundPosition: 'top center', backgroundSize: 'auto 100%'}} />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
       <div className="max-w-3xl mx-auto relative z-10">
         {/* Back Button */}
         <button
