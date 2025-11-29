@@ -14,9 +14,9 @@ const AddIdea = () => {
     ppt_Url: '',
   });
 
-  const [message, setMessage] = useState(''); 
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,20 +27,20 @@ const AddIdea = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setMessage('');
     setError('');
-    setIsLoading(true); 
+    setIsLoading(true);
 
     try {
-      
-      const response = await axios.post('/api/v1/ideas', formData, {
+
+      const response = await axios.post('https://mindnest-team-async.onrender.com/api/v1/ideas', formData, {
         headers: {
           'Content-Type': 'application/json',
         }
       });
 
-      
+
       setMessage('Idea created successfully!');
       setFormData({
         title: '',
@@ -58,7 +58,7 @@ const AddIdea = () => {
       const details = err.response?.data?.details ? ` (${JSON.stringify(err.response.data.details)})` : '';
       setError(errorMsg + details);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
@@ -179,8 +179,8 @@ const AddIdea = () => {
             </div>
 
             {/* Submit Button */}
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={isLoading}
               className="w-full rounded-full py-6 text-base font-semibold"
             >
