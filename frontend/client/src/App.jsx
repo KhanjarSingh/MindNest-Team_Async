@@ -8,6 +8,7 @@ import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SignUp';
 import AdminDashboard from './pages/AdminDashboard';
 import HackathonsPage from './pages/HackathonsPage';
+import AddIdea from './pages/studentDashboard/SubmitYourIdea';
 
 import { Toaster } from '@/components/ui/toaster';
 
@@ -23,6 +24,7 @@ export default function App(){
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/hackathons" element={<HackathonsPage />} />
+          <Route path="/addidea" element={<AddIdea />} />
           {/* <Route path="/test" element={<TestPage />} /> */}
 
 
