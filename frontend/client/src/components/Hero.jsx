@@ -8,7 +8,7 @@ const Hero = () => {
   
   const handleApplyNow = () => {
     if (isAuthenticated()) {
-      navigate('/studentdashboard/addidea');
+      navigate('/addidea');
     } else {
       navigate('/signup');
     }
