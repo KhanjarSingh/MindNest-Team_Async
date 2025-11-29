@@ -7,8 +7,21 @@ const createUser = async ({ username, email, password, role = 'PARTICIPANT', adm
   const saltRounds = 10;
 
   try {
-    // Validate admin secret if role is ADMIN
-    if (role === 'ADMIN') {
+    // Map role names to IDs
+    const roleMap = {
+      'STUDENT': 0,
+      'PARTICIPANT': 0, // Backward compatibility
+      'INSTRUCTOR': 1,
+      'ADMIN': 1 // Backward compatibility
+    };
+
+    const roleId = roleMap[role];
+    if (roleId === undefined) {
+      throw new Error('Invalid role');
+    }
+
+    // Validate admin secret if role is INSTRUCTOR/ADMIN
+    if (roleId === 1) {
       if (!adminSecret || adminSecret !== ADMIN_SECRET) {
         throw new Error('Invalid admin secret');
       }
@@ -27,11 +40,7 @@ const createUser = async ({ username, email, password, role = 'PARTICIPANT', adm
         username,
         email,
         password: hashedPassword,
-        role: {
-          connect: {
-            name: role
-          }
-        },
+        roleId,
       },
     });
 
