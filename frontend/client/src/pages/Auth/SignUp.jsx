@@ -106,7 +106,7 @@ export default function SignUp() {
       });
 
       setTimeout(() => {
-        navigate('/studentdashboard/addidea');
+        navigate('/');
       }, 1500);
     } catch (err) {
       setError(err.message);

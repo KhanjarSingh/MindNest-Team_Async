@@ -60,7 +60,7 @@ export default function SignIn() {
 
     try {
       await loginUser(formData);
-      navigate('/studentdashboard/addidea');
+      navigate('/');
     } catch (err) {
       setError(err.message);
     } finally {
