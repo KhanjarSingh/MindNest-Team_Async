@@ -76,16 +76,7 @@ const HackathonsPage = () => {
         throw new Error(`All proxies failed. Last error: ${lastError?.message}`);
       }
       
-      // Check for local mock override
-      if (import.meta.env.VITE_USE_LOCAL_MOCK === 'true') {
-        console.log('🔧 Using local mock data');
-        const mockData = await import('../data/devpost-mock.json');
-        const events = mockData.default.hackathons || [];
-        setHackathons(events.map(normalizeHackathon));
-        const uniqueCountries = [...new Set(events.map(h => h.location?.country).filter(Boolean))];
-        setCountries(uniqueCountries.sort());
-        return;
-      }
+
       
 
       
