@@ -34,14 +34,31 @@ const signup = async (req, res, next) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        return res.status(201).json({ 
-            message: "User created successfully", 
+        return res.status(201).json({
+            message: "User created successfully",
             user: { id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role },
-            token 
+            token
         });
     } catch (err) {
         console.error("Signup error:", err.message);
-        return res.status(400).json({ message: err.message || "Failed to create user" });
+
+        // Handle specific known errors
+        if (err.message === 'Username already exists' || err.message === 'Invalid admin secret') {
+            return res.status(400).json({ message: err.message });
+        }
+
+        // Handle Prisma unique constraint errors if they leak through
+        if (err.message.includes('Unique constraint failed')) {
+            if (err.message.includes('email')) {
+                return res.status(400).json({ message: "User already exists with this email" });
+            }
+            if (err.message.includes('username')) {
+                return res.status(400).json({ message: "Username already exists" });
+            }
+        }
+
+        // Generic error for everything else
+        return res.status(500).json({ message: "Failed to create user. Please try again later." });
     }
 };
 

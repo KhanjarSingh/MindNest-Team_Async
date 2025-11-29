@@ -27,7 +27,11 @@ const createUser = async ({ username, email, password, role = 'PARTICIPANT', adm
         username,
         email,
         password: hashedPassword,
-        role,
+        role: {
+          connect: {
+            name: role
+          }
+        },
       },
     });
 
@@ -90,13 +94,13 @@ const updateUser = async (id, data) => {
 
 
 
-const findUserByEmail = async (checkingVar,checkingVariableType) => {
-    if (checkingVariableType=="email"){
-        return await prisma.user.findUnique({ where: { email:checkingVar } });
-    }
-    else if (checkingVariableType == "username"){
-        return await prisma.user.findUnique({ where: { username:checkingVar } });
-    }
+const findUserByEmail = async (checkingVar, checkingVariableType) => {
+  if (checkingVariableType == "email") {
+    return await prisma.user.findUnique({ where: { email: checkingVar } });
+  }
+  else if (checkingVariableType == "username") {
+    return await prisma.user.findUnique({ where: { username: checkingVar } });
+  }
 };
 
 const comparePass = async (userPass, actualPass) => {
@@ -108,4 +112,4 @@ const comparePass = async (userPass, actualPass) => {
   }
 };
 
-module.exports = { createUser, findUser, updateUser,findUserByEmail,comparePass };
+module.exports = { createUser, findUser, updateUser, findUserByEmail, comparePass };
