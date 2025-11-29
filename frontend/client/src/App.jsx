@@ -27,7 +27,6 @@ export default function App(){
           <Route path="/hackathons" element={<HackathonsPage />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
-          <Route path="/studentdashboard" element={<StudentDashboard />} />
           <Route path="/studentdashboard/addidea" element={<AddIdea />} />
 
           {/* Admin Routes */}
