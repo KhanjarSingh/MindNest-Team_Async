@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000
 server = http.createServer(app);
 const io = socket(server, {
     cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:3000",
+        origin: "*",
         credentials: true
     }
 });
@@ -23,14 +23,14 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'));
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.FRONTEND_URL, 
-  credentials: true,                
+    origin: true,
+    credentials: true,
 }));
 
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  console.log('Request body:', req.body);
-  next();
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    console.log('Request body:', req.body);
+    next();
 });
 
 app.use('/api', routes);
@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', async (data) => {
         const { receiverId, content } = data;
         const senderId = socket.userId;
-        
+
         try {
             const message = await createMessage(senderId, receiverId, content);
             io.to(receiverId).emit('receiveMessage', message);
@@ -62,12 +62,12 @@ app.use((err, req, res, next) => {
     console.error('Error:', err);
     console.error('Error message:', err.message);
     console.error('Error stack:', err.stack);
-    res.status(500).json({ 
-        message: 'Internal server error', 
-        error: err.message 
+    res.status(500).json({
+        message: 'Internal server error',
+        error: err.message
     });
 });
 
-server.listen(port,()=>{
+server.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`)
 })
