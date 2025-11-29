@@ -25,9 +25,9 @@ export default function App(){
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/hackathons" element={<HackathonsPage />} />
-          <Route path="/test" element={<TestPage />} />
+          {/* <Route path="/test" element={<TestPage />} /> */}
           <Route path="/dashboard" element={<StudentDashboard />} />
-          <Route path="/studentdashboard/addidea" element={<AddIdea />} />
+          <Route path="/addidea" element={<AddIdea />} />
 
           {/* Admin Routes */}
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
