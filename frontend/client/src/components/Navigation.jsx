@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { isAuthenticated, logoutUser } from "../services/authService";
+import ProfileDropdown from "./navbar/ProfileDropdown";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,9 +61,7 @@ const Navigation = () => {
               )
             ))}
             {authenticated ? (
-              <Button onClick={handleLogout} variant="outline" className="rounded-full shadow-lg hover:shadow-xl transition-all">
-                Logout
-              </Button>
+              <ProfileDropdown onLogout={handleLogout} />
             ) : (
               <Button onClick={() => navigate('/signin')} className="rounded-full shadow-lg hover:shadow-xl transition-all">
                 Sign In
@@ -108,9 +107,9 @@ const Navigation = () => {
                 )
               ))}
               {authenticated ? (
-                <Button onClick={handleLogout} variant="outline" className="rounded-full w-full shadow-lg">
-                  Logout
-                </Button>
+                <div className="flex justify-center">
+                  <ProfileDropdown onLogout={handleLogout} />
+                </div>
               ) : (
                 <Button onClick={() => { navigate('/signin'); setIsOpen(false); }} className="rounded-full w-full shadow-lg">
                   Sign In
