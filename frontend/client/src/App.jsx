@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
-import About from './pages/About';
+import About from './components/About';
 import NotFound from './pages/NotFound';
 import StudentDashboard from './pages/studentDashboard/studentDashboard';
 import AddIdea from './pages/studentDashboard/addIdea';
@@ -9,8 +9,7 @@ import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SignUp';
 import AdminDashboard from './pages/AdminDashboard';
 import HackathonsPage from './pages/HackathonsPage';
-import TestPage from './pages/TestPage';
-import ProtectedRoute from './components/ProtectedRoute';
+
 import { Toaster } from '@/components/ui/toaster';
 
 export default function App(){
