@@ -51,26 +51,26 @@ const Benefits = () => {
         </div>
 
         {/* Benefits Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
           {benefits.map((benefit, index) => {
             const Icon = benefit.icon;
             return (
               <div
                 key={benefit.title}
-                className="group p-8 rounded-3xl bg-card backdrop-blur-lg border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1"
+                className="group p-4 md:p-8 rounded-3xl bg-card backdrop-blur-lg border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 aspect-square md:aspect-auto flex flex-col justify-center"
                 style={{
                   animation: "fade-up 0.6s ease-out",
                   animationDelay: `${index * 0.1}s`,
                   animationFillMode: "both",
                 }}
               >
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                  <Icon className="w-7 h-7 text-primary group-hover:text-primary-foreground transition-colors" />
+                <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3 md:mb-6 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+                  <Icon className="w-5 h-5 md:w-7 md:h-7 text-primary group-hover:text-primary-foreground transition-colors" />
                 </div>
-                <h4 className="text-xl font-semibold text-foreground mb-3">
+                <h4 className="text-sm md:text-xl font-semibold text-foreground mb-2 md:mb-3">
                   {benefit.title}
                 </h4>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-xs md:text-base text-muted-foreground leading-relaxed">
                   {benefit.description}
                 </p>
               </div>
