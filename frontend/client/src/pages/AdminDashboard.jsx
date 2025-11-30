@@ -25,7 +25,7 @@ export default function AdminDashboard() {
   const fetchIdeas = async () => {
     try {
       console.log('Fetching ideas from API...');
-      const response = await axios.get('http://localhost:3002/api/v1/ideas');
+      const response = await axios.get('https://mindnest-team-async.onrender.com/api/v1/ideas');
       console.log('API Response:', response.data);
       console.log('Ideas found:', response.data.data?.length || 0);
       setIdeas(response.data.data || []);

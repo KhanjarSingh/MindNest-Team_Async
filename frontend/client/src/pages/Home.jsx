@@ -22,7 +22,7 @@ export default function Home() {
   const fetchUserIdeas = async () => {
     try {
       const token = getAuthToken();
-      const response = await axios.get('http://localhost:3002/api/v1/ideas/user', {
+      const response = await axios.get('https://mindnest-team-async.onrender.com/api/v1/ideas/user', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
