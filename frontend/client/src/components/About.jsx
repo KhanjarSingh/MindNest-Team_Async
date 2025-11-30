@@ -61,12 +61,8 @@ const About = () => {
             <div className="relative">
               {/* Glass Card */}
               <div className="relative p-8 rounded-3xl bg-card/50 backdrop-blur-xl border border-border/50 shadow-2xl">
-                <div className="aspect-square rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <div className="text-center text-primary-foreground">
-                    <div className="text-6xl font-bold mb-4">🚀</div>
-                    <p className="text-xl font-semibold">Your Journey</p>
-                    <p className="text-lg opacity-90">Starts Here</p>
-                  </div>
+                <div className="aspect-square rounded-2xl overflow-hidden">
+                  <img src="/about-MindNest.png" alt="About MindNest" className="w-full h-full object-cover" />
                 </div>
               </div>
 
