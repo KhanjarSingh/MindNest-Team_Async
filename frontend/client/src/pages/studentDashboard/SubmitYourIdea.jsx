@@ -36,15 +36,18 @@ const AddIdea = () => {
     setIsLoading(true);
 
     try {
+      console.log('Submitting idea:', formData);
       const token = getAuthToken();
-      const response = await axios.post('https://mindnest-team-async.onrender.com/api/v1/ideas', formData, {
+      console.log('Auth token:', token ? 'Present' : 'Missing');
+      
+      const response = await axios.post('http://localhost:3002/api/v1/ideas', formData, {
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         }
       });
 
-
+      console.log('Idea submission response:', response.data);
       setMessage('Idea created successfully!');
       setFormData({
         title: '',

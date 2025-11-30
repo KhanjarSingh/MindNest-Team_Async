@@ -46,24 +46,22 @@ model Chat {
 }
 
 model Idea {
-    id           String   @id @default(cuid())
-    title        String
-    pitch        String   @db.Text
-    description  String   @db.Text
-    demoLink     String?
-    pitchDeckUrl String?
-    ppt_Url      String?
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-
-    // NEW FIELDS
-    userId        Int
+    id            String   @id @default(cuid())
+    title         String
+    pitch         String   @db.Text
+    description   String   @db.Text
+    demoLink      String?
+    pitchDeckUrl  String?
+    ppt_Url       String?
+    userId        Int?
+    user          User?    @relation(fields: [userId], references: [id])
     status        String   @default("under_review")
-    note          String?  @db.Text
     score         Int?
     fundingAmount Int?
-    tags          Json?
+    note          String?  @db.Text
+    tags          String?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 
-    // RELATION
-    user          User     @relation(fields: [userId], references: [id])
+    @@index([userId], map: "ideas_userId_fkey")
 }

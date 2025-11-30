@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser, getUserRole } from '../../services/authService';
+import { loginUser } from '../../services/authService';
 import { Button } from '@/components/ui/button';
 import { LogIn, Sparkles } from 'lucide-react';
 
@@ -60,13 +60,7 @@ export default function SignIn() {
 
     try {
       await loginUser(formData);
-      // Redirect based on user role
-      const userRole = getUserRole();
-      if (userRole === 'ADMIN') {
-        navigate('/admin/home');
-      } else {
-        navigate('/');
-      }
+      navigate('/');
     } catch (err) {
       setError(err.message);
     } finally {
