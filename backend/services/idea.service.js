@@ -1,25 +1,11 @@
-// Make sure to import your configured prisma client
-// You likely have this in /config/prisma.js or /client.js
-// I'm assuming it's exported as 'prisma'
 const prisma = require('../config/prisma.js');
 
-/**
- * Creates a new idea in the database.
- * @param {object} ideaData - The data for the new idea.
- * @returns {Promise<object>} The newly created idea.
- */
-const createIdea = async (ideaData) => {
+const createIdea = async (ideaData, userId) => {
   const { title, pitch, description, demoLink, pitchDeckUrl, ppt_Url } = ideaData;
 
   try {
     console.log('=== idea.service.createIdea called ===');
-    console.log('Creating idea with data:', { title, pitch, description, demoLink, pitchDeckUrl, ppt_Url });
-    console.log('Prisma instance:', typeof prisma);
-    console.log('Prisma.idea:', typeof prisma?.idea);
-    
-    if (!prisma || !prisma.idea) {
-      throw new Error('Prisma client not initialized properly');
-    }
+    console.log('Creating idea with data:', { title, pitch, description, demoLink, pitchDeckUrl, ppt_Url, userId });
     
     const newIdea = await prisma.idea.create({
       data: {
@@ -29,7 +15,17 @@ const createIdea = async (ideaData) => {
         demoLink,
         pitchDeckUrl,
         ppt_Url,
+        userId,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true
+          }
+        }
+      }
     });
     
     console.log('Idea created successfully:', newIdea);
@@ -44,6 +40,152 @@ const createIdea = async (ideaData) => {
   }
 };
 
+const getAllIdeas = async () => {
+  return await prisma.idea.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+};
+
+const getIdeaById = async (id) => {
+  return await prisma.idea.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true
+        }
+      }
+    }
+  });
+};
+
+const updateIdeaStatus = async (id, status) => {
+  console.log('updateIdeaStatus called with:', { id, status });
+  try {
+    const result = await prisma.idea.update({
+      where: { id: id },
+      data: { status: status },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true
+          }
+        }
+      }
+    });
+    console.log('Update successful:', result);
+    return result;
+  } catch (error) {
+    console.error('Error in updateIdeaStatus:', error);
+    throw error;
+  }
+};
+
+const updateIdeaScore = async (id, score) => {
+  return await prisma.idea.update({
+    where: { id },
+    data: { score },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true
+        }
+      }
+    }
+  });
+};
+
+const updateIdeaFunding = async (id, fundingAmount) => {
+  return await prisma.idea.update({
+    where: { id },
+    data: { fundingAmount },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true
+        }
+      }
+    }
+  });
+};
+
+const updateIdeaNote = async (id, note) => {
+  return await prisma.idea.update({
+    where: { id },
+    data: { note },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true
+        }
+      }
+    }
+  });
+};
+
+const updateIdeaTags = async (id, tags) => {
+  return await prisma.idea.update({
+    where: { id },
+    data: { tags },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true
+        }
+      }
+    }
+  });
+};
+
+const getIdeasByUser = async (userId) => {
+  return await prisma.idea.findMany({
+    where: { userId },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+};
+
 module.exports = {
   createIdea,
+  getAllIdeas,
+  getIdeaById,
+  getIdeasByUser,
+  updateIdeaStatus,
+  updateIdeaScore,
+  updateIdeaFunding,
+  updateIdeaNote,
+  updateIdeaTags,
 };

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Lightbulb, ArrowLeft } from 'lucide-react';
+import { getAuthToken } from '../../services/authService';
 
 
 const AddIdea = () => {
@@ -35,14 +36,18 @@ const AddIdea = () => {
     setIsLoading(true);
 
     try {
-
-      const response = await axios.post('https://mindnest-team-async.onrender.com/api/v1/ideas', formData, {
+      console.log('Submitting idea:', formData);
+      const token = getAuthToken();
+      console.log('Auth token:', token ? 'Present' : 'Missing');
+      
+      const response = await axios.post('http://localhost:3002/api/v1/ideas', formData, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         }
       });
 
-
+      console.log('Idea submission response:', response.data);
       setMessage('Idea created successfully!');
       setFormData({
         title: '',

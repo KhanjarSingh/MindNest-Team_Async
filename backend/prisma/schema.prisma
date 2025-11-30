@@ -27,6 +27,7 @@ model User {
     profile_json     Json?
     receivedMessages Chat[]    @relation("ReceivedMessages")
     sentMessages     Chat[]    @relation("SentMessages")
+    ideas            Idea[]
 }
 
 model Chat {
@@ -45,13 +46,22 @@ model Chat {
 }
 
 model Idea {
-    id           String   @id @default(cuid())
-    title        String
-    pitch        String   @db.Text
-    description  String   @db.Text
-    demoLink     String?
-    pitchDeckUrl String?
-    ppt_Url      String?
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
+    id            String   @id @default(cuid())
+    title         String
+    pitch         String   @db.Text
+    description   String   @db.Text
+    demoLink      String?
+    pitchDeckUrl  String?
+    ppt_Url       String?
+    userId        Int?
+    user          User?    @relation(fields: [userId], references: [id])
+    status        String   @default("under_review")
+    score         Int?
+    fundingAmount Int?
+    note          String?  @db.Text
+    tags          String?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    @@index([userId], map: "ideas_userId_fkey")
 }
