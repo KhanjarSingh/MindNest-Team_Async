@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Lightbulb, ArrowLeft } from 'lucide-react';
+import { getAuthToken } from '../../services/authService';
 
 
 const AddIdea = () => {
@@ -35,9 +36,10 @@ const AddIdea = () => {
     setIsLoading(true);
 
     try {
-
+      const token = getAuthToken();
       const response = await axios.post('https://mindnest-team-async.onrender.com/api/v1/ideas', formData, {
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         }
       });
