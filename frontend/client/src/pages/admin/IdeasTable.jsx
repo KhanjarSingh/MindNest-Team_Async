@@ -53,7 +53,7 @@ const IdeasTable = () => {
       setError(null);
       
       const token = getAuthToken();
-      const response = await axios.get(`${API_BASE_URL}/ideas/all`, {
+      const response = await axios.get(`${API_BASE_URL}/ideas`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
