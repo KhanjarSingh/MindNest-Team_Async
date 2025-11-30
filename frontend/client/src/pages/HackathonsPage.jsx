@@ -319,7 +319,7 @@ const HackathonsPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
           {paginatedHackathons.length === 0 ? (
             <div className="col-span-full text-center py-16">
               <div className="bg-card rounded-2xl shadow-xl p-12 max-w-md mx-auto border border-border">
@@ -332,7 +332,7 @@ const HackathonsPage = () => {
             </div>
           ) : (
             paginatedHackathons.map((hackathon) => (
-              <div key={hackathon.id} className="bg-card rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-border backdrop-blur-sm">
+              <div key={hackathon.id} className="bg-card rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-border backdrop-blur-sm flex flex-col">
                 <div className="relative">
                   <img
                     src={hackathon.banner || hackathon.logo || '/placeholder.svg'}
@@ -360,38 +360,39 @@ const HackathonsPage = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                 </div>
 
-                <div className="p-6">
-                  <h3 className="font-bold text-xl mb-3 text-card-foreground overflow-hidden" style={{display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'}}>
+                <div className="p-3 md:p-6 flex flex-col flex-grow">
+                  <h3 className="font-bold text-sm md:text-xl mb-2 md:mb-3 text-card-foreground overflow-hidden" style={{display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'}}>
                     {decodeHtmlEntities(hackathon.name)}
                   </h3>
                   
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center text-sm text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                      <Calendar className="w-4 h-4 mr-3 text-primary" />
-                      <span className="font-medium">
+                  <div className="space-y-2 md:space-y-3 mb-4 md:mb-6 flex-grow">
+                    <div className="flex items-center text-xs md:text-sm text-muted-foreground bg-muted/50 p-1.5 md:p-2 rounded-lg">
+                      <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-2 md:mr-3 text-primary flex-shrink-0" />
+                      <span className="font-medium truncate">
                         {hackathon.start ? new Date(hackathon.start).toLocaleDateString() : 'TBA'} — {hackathon.end ? new Date(hackathon.end).toLocaleDateString() : 'TBA'}
                       </span>
                     </div>
                     
-                    <div className="flex items-center text-sm text-muted-foreground bg-muted/50 p-2 rounded-lg">
-                      <MapPin className="w-4 h-4 mr-3 text-secondary" />
-                      <span className="font-medium">{[hackathon.city, hackathon.state, hackathon.country].filter(Boolean).join(', ') || 'Location: TBA'}</span>
+                    <div className="flex items-center text-xs md:text-sm text-muted-foreground bg-muted/50 p-1.5 md:p-2 rounded-lg">
+                      <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-2 md:mr-3 text-secondary flex-shrink-0" />
+                      <span className="font-medium truncate">{[hackathon.city, hackathon.state, hackathon.country].filter(Boolean).join(', ') || 'Location: TBA'}</span>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 mt-auto">
                     {hackathon.website ? (
                       <button
                         onClick={() => window.open(hackathon.website, '_blank', 'noopener,noreferrer')}
-                        className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 px-6 rounded-xl hover:opacity-90 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold flex items-center justify-center gap-2"
+                        className="w-full bg-gradient-to-r from-primary to-secondary text-white py-2 md:py-3 px-3 md:px-6 rounded-xl hover:opacity-90 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold flex items-center justify-center gap-1 md:gap-2 text-xs md:text-base"
                       >
-                        <ExternalLink className="w-4 h-4" />
-                        Participate Now
+                        <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
+                        <span className="hidden md:inline">Participate Now</span>
+                        <span className="md:hidden">Join</span>
                       </button>
                     ) : (
                       <button
                         disabled
-                        className="w-full bg-muted text-muted-foreground py-3 px-6 rounded-xl cursor-not-allowed font-semibold flex items-center justify-center gap-2"
+                        className="w-full bg-muted text-muted-foreground py-2 md:py-3 px-3 md:px-6 rounded-xl cursor-not-allowed font-semibold flex items-center justify-center gap-1 md:gap-2 text-xs md:text-base"
                         title="No registration link"
                       >
                         <Lock className="w-4 h-4" />
