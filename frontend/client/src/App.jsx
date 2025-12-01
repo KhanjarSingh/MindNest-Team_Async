@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './components/About';
 import NotFound from './pages/NotFound';
+import Schemes from './pages/Schemes';
 
 import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SignUp';
@@ -23,6 +24,7 @@ export default function App(){
           {/* Main Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/schemes" element={<Schemes />} />
           <Route path="/hackathons" element={<HackathonsPage />} />
           <Route path="/addidea" element={<AddIdea />} />
           {/* <Route path="/test" element={<TestPage />} /> */}
