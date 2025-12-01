@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { isAuthenticated, logoutUser } from "../services/authService";
+import { isAuthenticated, logoutUser, isAdmin } from "../services/authService";
 import ProfileDropdown from "./navbar/ProfileDropdown";
 
 const Navigation = () => {
@@ -15,13 +15,19 @@ const Navigation = () => {
     navigate('/');
   };
 
-  const navItems = [
+  const adminNavItems = [
+    { label: "Dashboard", href: "/admin-dashboard", isRoute: true },
+  ];
+
+  const regularNavItems = [
     { label: "Home", href: "#home" },
     { label: "About", href: "#about" },
     { label: "Benefits", href: "#benefits" },
     { label: "Upcoming hackathons", href: "/hackathons", isRoute: true },
     { label: "Apply", href: "#apply" },
   ];
+
+  const navItems = isAdmin() ? adminNavItems : regularNavItems;
 
   return (
     <nav className="fixed top-4 left-4 right-4 z-50">

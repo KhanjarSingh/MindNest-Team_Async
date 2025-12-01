@@ -87,7 +87,7 @@ export default function SignUp() {
     setLoading(true);
 
     try {
-      await signupUser({
+      const result = await signupUser({
         username: formData.username,
         email: formData.email,
         password: formData.password,
@@ -106,7 +106,12 @@ export default function SignUp() {
       });
 
       setTimeout(() => {
-        navigate('/');
+
+        if (result.user?.role === 'ADMIN') {
+          navigate('/admin-dashboard');
+        } else {
+          navigate('/');
+        }
       }, 1500);
     } catch (err) {
       setError(err.message);

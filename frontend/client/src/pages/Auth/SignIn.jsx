@@ -59,8 +59,13 @@ export default function SignIn() {
     setLoading(true);
 
     try {
-      await loginUser(formData);
-      navigate('/');
+      const result = await loginUser(formData);
+
+      if (result.user?.role === 'ADMIN') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.message);
     } finally {
