@@ -10,6 +10,8 @@ import SignUp from './pages/Auth/SignUp';
 import AdminDashboard from './pages/AdminDashboard';
 import HackathonsPage from './pages/HackathonsPage';
 import AddIdea from './pages/studentDashboard/SubmitYourIdea';
+import AdminRoute from './components/AdminRoute';
+import ParticipantRoute from './components/ParticipantRoute';
 
 import { Toaster } from '@/components/ui/toaster';
 
@@ -22,6 +24,10 @@ export default function App(){
           <Route path="/signup" element={<SignUp />} />
 
           {/* Main Routes */}
+          <Route path="/" element={<ParticipantRoute><Home /></ParticipantRoute>} />
+          <Route path="/about" element={<ParticipantRoute><About /></ParticipantRoute>} />
+          <Route path="/hackathons" element={<ParticipantRoute><HackathonsPage /></ParticipantRoute>} />
+          <Route path="/addidea" element={<ParticipantRoute><AddIdea /></ParticipantRoute>} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/schemes" element={<Schemes />} />
@@ -31,7 +37,7 @@ export default function App(){
 
 
           {/* Admin Routes */}
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
 
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />

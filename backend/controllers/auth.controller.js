@@ -25,7 +25,8 @@ const signup = async (req, res, next) => {
         }
 
         const newUser = await createUser({ username, email, password, role, adminSecret });
-        const token = await generateJWT({ id: newUser.id, email: newUser.email, role: newUser.role });
+        const userRole = newUser.roleId === 1 ? 'ADMIN' : 'PARTICIPANT';
+        const token = await generateJWT({ id: newUser.id, email: newUser.email, role: userRole });
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -36,7 +37,7 @@ const signup = async (req, res, next) => {
 
         return res.status(201).json({
             message: "User created successfully",
-            user: { id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role },
+            user: { id: newUser.id, username: newUser.username, email: newUser.email, role: userRole },
             token
         });
     } catch (err) {
@@ -118,7 +119,8 @@ const login = async (req, res, next) => {
             return res.status(400).json({ message: "Incorrect password" });
         }
 
-        const token = await generateJWT({ id: findingUser.id, email: findingUser.email, role: findingUser.role });
+        const userRole = findingUser.roleId === 1 ? 'ADMIN' : 'PARTICIPANT';
+        const token = await generateJWT({ id: findingUser.id, email: findingUser.email, role: userRole });
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -126,10 +128,10 @@ const login = async (req, res, next) => {
             sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
-
+        
         return res.status(200).json({
             message: "User successfully logged in",
-            user: { id: findingUser.id, username: findingUser.username, email: findingUser.email, role: findingUser.role },
+            user: { id: findingUser.id, username: findingUser.username, email: findingUser.email, role: userRole },
             token
         });
     } catch (err) {
