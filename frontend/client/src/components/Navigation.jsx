@@ -20,12 +20,12 @@ const Navigation = () => {
   ];
 
   const regularNavItems = [
-    { label: "Home", href: "#home" },
-    { label: "About", href: "#about" },
-    { label: "Benefits", href: "#benefits" },
+    { label: "Home", href: "/", isRoute: true },
+    { label: "About", href: "/#about", isRoute: true },
+    { label: "Benefits", href: "/#benefits", isRoute: true },
     { label: "Schemes", href: "/schemes", isRoute: true },
     { label: "Upcoming hackathons", href: "/hackathons", isRoute: true },
-    { label: "Apply", href: "#apply" },
+    { label: "Apply", href: "/#apply", isRoute: true },
   ];
 
   const navItems = isAdmin() ? adminNavItems : regularNavItems;
