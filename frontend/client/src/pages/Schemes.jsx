@@ -23,6 +23,7 @@ export default function Schemes() {
           title: 'Startup India Seed Fund Scheme',
           description: 'Financial assistance to startups for proof of concept, prototype development, product trials, market entry and commercialization.',
           source: 'Startup India',
+          logo: 'https://www.startupindia.gov.in/content/dam/invest-india/newhomepage/DPIIT-header.png',
           url: 'https://www.startupindia.gov.in/content/sih/en/government-schemes.html',
           tags: ['funding', 'startup', 'seed']
         },
@@ -31,6 +32,7 @@ export default function Schemes() {
           title: 'Digital India Initiative',
           description: 'Transform India into a digitally empowered society and knowledge economy through digital infrastructure and governance.',
           source: 'Digital India',
+          logo: 'https://cdn.digitalindiacorporation.in/wp-content/themes/di-child/assets/images/digital-india.svg.gzip',
           url: 'https://digitalindia.gov.in/',
           tags: ['digital', 'technology', 'governance']
         },
@@ -39,6 +41,7 @@ export default function Schemes() {
           title: 'Atal Innovation Mission',
           description: 'Promote innovation and entrepreneurship across the country through various initiatives and programs.',
           source: 'NITI Aayog',
+          logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxfyt6ob6Fm9FZMN3B-KXCd-V9eLX05KB_hntVZBTkb4mq-Gyn&s',
           url: 'https://aim.gov.in/',
           tags: ['innovation', 'entrepreneurship', 'incubation']
         },
@@ -47,6 +50,7 @@ export default function Schemes() {
           title: 'Make in India',
           description: 'Initiative to encourage companies to manufacture their products in India and incentivize dedicated investments.',
           source: 'Make in India',
+          logo: 'https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png',
           url: 'https://www.makeinindia.com/',
           tags: ['manufacturing', 'investment', 'industry']
         },
@@ -55,6 +59,7 @@ export default function Schemes() {
           title: 'Stand Up India Scheme',
           description: 'Facilitate bank loans between ₹10 lakh and ₹1 crore to SC/ST and women entrepreneurs.',
           source: 'Stand Up India',
+          logo: 'https://upload.wikimedia.org/wikipedia/en/3/3a/StandUp_India.gif',
           url: 'https://www.standupmitra.in/',
           tags: ['loan', 'women', 'sc/st', 'entrepreneurship']
         },
@@ -63,6 +68,7 @@ export default function Schemes() {
           title: 'Skill India Mission',
           description: 'Enable a large number of Indian youth to take up industry-relevant skill training.',
           source: 'Skill India',
+          logo: 'https://www.skillindiadigital.gov.in/assets/new-ux-img/skill-india-big-logo.svg',
           url: 'https://www.skillindia.gov.in/',
           tags: ['skills', 'training', 'youth', 'employment']
         }
@@ -143,6 +149,11 @@ export default function Schemes() {
                     className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-6 hover:bg-card/70 transition-all duration-300 hover:scale-105"
                   >
                     <div className="mb-4">
+                      {scheme.logo && (
+                        <div className="mb-3 h-12 flex items-center">
+                          <img src={scheme.logo} alt={scheme.source} className="max-h-full max-w-[120px] object-contain" />
+                        </div>
+                      )}
                       <div className="text-xs text-primary font-medium mb-2">{scheme.source}</div>
                       <h3 className="text-xl font-bold text-foreground mb-3">{scheme.title}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">{scheme.description}</p>
