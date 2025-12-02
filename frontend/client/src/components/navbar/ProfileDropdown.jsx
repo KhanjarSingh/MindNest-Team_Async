@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { LogOut } from "lucide-react";
 import studentAvatar from "../../assets/avatars/student.png";
+import { isAdmin } from "../../services/authService";
 
 const ProfileDropdown = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,7 @@ const ProfileDropdown = ({ onLogout }) => {
                 alt="Student Profile" 
                 className="w-10 h-10 rounded-full"
               />
-              <p className="text-xs text-primary font-medium">Student</p>
+              <p className="text-xs text-primary font-medium">{isAdmin() ? 'Admin' : 'Student'}</p>
             </div>
           </div>
           
