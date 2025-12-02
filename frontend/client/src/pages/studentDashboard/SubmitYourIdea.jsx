@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Lightbulb, ArrowLeft } from 'lucide-react';
-import { getAuthToken } from '../../services/authService';
+import { Sparkles, Lightbulb, ArrowLeft, Eye } from 'lucide-react';
+import { ideaService } from '../../services/ideaService';
 
 
 const AddIdea = () => {
@@ -37,17 +36,10 @@ const AddIdea = () => {
 
     try {
       console.log('Submitting idea:', formData);
-      const token = getAuthToken();
-      console.log('Auth token:', token ? 'Present' : 'Missing');
       
-      const response = await axios.post('http://localhost:3002/api/v1/ideas', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        }
-      });
-
-      console.log('Idea submission response:', response.data);
+      const response = await ideaService.createIdea(formData);
+      console.log('Idea submission response:', response);
+      
       setMessage('Idea created successfully!');
       setFormData({
         title: '',
@@ -57,6 +49,11 @@ const AddIdea = () => {
         pitchDeckUrl: '',
         ppt_Url: '',
       });
+
+      // Show success message for 2 seconds, then navigate to MyIdeas
+      setTimeout(() => {
+        navigate('/my-ideas');
+      }, 2000);
 
     } catch (err) {
       console.error('Error response:', err.response?.data);
@@ -219,7 +216,18 @@ const AddIdea = () => {
             {/* Messages */}
             {message && (
               <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-green-800 text-center">
-                {message}
+                <div className="flex items-center justify-center gap-2">
+                  <span>{message}</span>
+                  <Button 
+                    variant="link" 
+                    size="sm" 
+                    onClick={() => navigate('/my-ideas')}
+                    className="text-green-800 hover:text-green-900 p-0 h-auto"
+                  >
+                    <Eye className="w-4 h-4 mr-1" />
+                    View My Ideas
+                  </Button>
+                </div>
               </div>
             )}
             {error && (

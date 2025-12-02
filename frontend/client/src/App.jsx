@@ -10,6 +10,7 @@ import SignUp from './pages/Auth/SignUp';
 import AdminDashboard from './pages/AdminDashboard';
 import HackathonsPage from './pages/HackathonsPage';
 import AddIdea from './pages/studentDashboard/SubmitYourIdea';
+import MyIdeas from './pages/studentDashboard/MyIdeas';
 import AdminRoute from './components/AdminRoute';
 import ParticipantRoute from './components/ParticipantRoute';
 
@@ -28,6 +29,7 @@ export default function App(){
           <Route path="/about" element={<ParticipantRoute><About /></ParticipantRoute>} />
           <Route path="/hackathons" element={<ParticipantRoute><HackathonsPage /></ParticipantRoute>} />
           <Route path="/addidea" element={<ParticipantRoute><AddIdea /></ParticipantRoute>} />
+          <Route path="/my-ideas" element={<ParticipantRoute><MyIdeas /></ParticipantRoute>} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/schemes" element={<Schemes />} />

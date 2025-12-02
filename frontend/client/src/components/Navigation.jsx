@@ -25,6 +25,7 @@ const Navigation = () => {
     { label: "Benefits", href: "/#benefits", isRoute: true },
     { label: "Schemes", href: "/schemes", isRoute: true },
     { label: "Upcoming hackathons", href: "/hackathons", isRoute: true },
+    ...(authenticated ? [{ label: "My Ideas", href: "/my-ideas", isRoute: true }] : []),
     { label: "Apply", href: "/#apply", isRoute: true },
   ];
 
