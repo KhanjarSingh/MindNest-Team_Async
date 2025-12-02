@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Navigation from '../components/Navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, MessageCircle } from 'lucide-react';
+import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, Clock, Eye, Edit3, Save, X } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -49,7 +49,6 @@ export default function AdminDashboard() {
       setIdeas(response.data || []);
     } catch (error) {
       console.error('Error fetching ideas:', error);
-      console.error('Error details:', error.response?.data);
       setIdeas([]);
     } finally {
       setLoading(false);
@@ -82,14 +81,13 @@ export default function AdminDashboard() {
           throw new Error(`Unknown field: ${field}`);
       }
       
-      // Update local state with the returned data
-      const updatedIdea = response.data;
+      // Update local state
       setIdeas(prev => prev.map(idea => 
-        idea.id === ideaId ? updatedIdea : idea
+        idea.id === ideaId ? { ...idea, [field]: value } : idea
       ));
       
       if (selectedIdea && selectedIdea.id === ideaId) {
-        setSelectedIdea(updatedIdea);
+        setSelectedIdea(prev => ({ ...prev, [field]: value }));
       }
       
       setUpdateMessage('Updated successfully!');
@@ -126,142 +124,364 @@ export default function AdminDashboard() {
         <section className="relative min-h-screen flex items-start justify-center pt-20 overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-top bg-no-repeat" style={{ backgroundImage: 'url("/Home-Bg.jpg")' }}></div>
           
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
+            <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
+          </div>
+          
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12">
             <Button 
               onClick={() => setSelectedIdea(null)}
               variant="outline"
-              className="mb-6"
+              className="mb-6 hover:scale-105 transition-all duration-300 bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/50"
             >
-              ← Back to Ideas
+              <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
+              Back to Ideas
             </Button>
             
-            <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-8">
-              <h1 className="text-3xl font-bold text-foreground mb-6">{selectedIdea.title}</h1>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground mb-4">Idea Details</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Student</label>
-                      <p className="text-foreground">{selectedIdea.user?.username || 'Unknown'}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Email</label>
-                      <p className="text-foreground">{selectedIdea.user?.email || 'Unknown'}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Pitch</label>
-                      <p className="text-foreground">{selectedIdea.pitch}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Description</label>
-                      <p className="text-foreground">{selectedIdea.description}</p>
-                    </div>
-                    {selectedIdea.demoLink && (
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">Demo Link</label>
-                        <a href={selectedIdea.demoLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline block">
-                          View Demo
-                        </a>
-                      </div>
-                    )}
-                  </div>
+            <div className="bg-gradient-to-br from-card/60 to-card/40 backdrop-blur-xl rounded-3xl border border-border/30 p-8 shadow-2xl animate-fade-up">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 text-primary" />
                 </div>
+                <h1 className="text-3xl font-bold text-foreground">{selectedIdea.title}</h1>
+              </div>
+              
+              <div className="space-y-8">
+                {/* Top Section - Submitted Resources Horizontal */}
+                {(selectedIdea.demoLink || selectedIdea.pitchDeckUrl || selectedIdea.ppt_Url) && (
+                  <div className="bg-gradient-to-br from-slate-50/50 to-gray-100/50 rounded-2xl p-6 border border-gray-200/50">
+                    <h3 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                      Submitted Resources
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {selectedIdea.demoLink && (
+                        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                          <div className="flex items-center justify-between p-3 bg-gray-50 border-b border-gray-200">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                              <span className="text-sm font-medium text-gray-700">Live Demo</span>
+                            </div>
+                            <button 
+                              onClick={() => window.open(selectedIdea.demoLink, '_blank')}
+                              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                              Open in new tab
+                            </button>
+                          </div>
+                          <div className="relative h-64 bg-gray-50">
+                            <iframe 
+                              src={selectedIdea.demoLink.includes('drive.google.com') ? 
+                                selectedIdea.demoLink.replace('/view?usp=sharing', '/preview').replace('/edit?usp=sharing', '/preview').replace('/edit', '/preview') :
+                                selectedIdea.demoLink
+                              }
+                              className="w-full h-full border-0"
+                              title="Live Demo Preview"
+                              sandbox="allow-scripts allow-same-origin allow-forms"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {selectedIdea.pitchDeckUrl && (
+                        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                          <div className="flex items-center justify-between p-3 bg-gray-50 border-b border-gray-200">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                              <span className="text-sm font-medium text-gray-700">Pitch Deck</span>
+                            </div>
+                            <button 
+                              onClick={() => window.open(selectedIdea.pitchDeckUrl, '_blank')}
+                              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                              Open in new tab
+                            </button>
+                          </div>
+                          <div className="relative h-64 bg-gray-50">
+                            <iframe 
+                              src={selectedIdea.pitchDeckUrl.includes('drive.google.com') ? 
+                                selectedIdea.pitchDeckUrl.replace('/view?usp=sharing', '/preview').replace('/edit?usp=sharing', '/preview').replace('/edit', '/preview') :
+                                selectedIdea.pitchDeckUrl
+                              }
+                              className="w-full h-full border-0"
+                              title="Pitch Deck Preview"
+                              sandbox="allow-scripts allow-same-origin allow-forms"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {selectedIdea.ppt_Url && (
+                        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                          <div className="flex items-center justify-between p-3 bg-gray-50 border-b border-gray-200">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                              <span className="text-sm font-medium text-gray-700">Presentation</span>
+                            </div>
+                            <button 
+                              onClick={() => window.open(selectedIdea.ppt_Url, '_blank')}
+                              className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                              Open in new tab
+                            </button>
+                          </div>
+                          <div className="relative h-64 bg-gray-50">
+                            <iframe 
+                              src={selectedIdea.ppt_Url.includes('drive.google.com') ? 
+                                selectedIdea.ppt_Url.replace('/view?usp=sharing', '/preview').replace('/edit?usp=sharing', '/preview').replace('/edit', '/preview') :
+                                selectedIdea.ppt_Url
+                              }
+                              className="w-full h-full border-0"
+                              title="Presentation Preview"
+                              sandbox="allow-scripts allow-same-origin allow-forms"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
                 
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground mb-4">Admin Controls</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Status</label>
-                      <Select 
-                        value={selectedIdea.status || 'under_review'} 
-                        onValueChange={(value) => updateField(selectedIdea.id, 'status', value)}
-                        disabled={updating}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="under_review">Under Review</SelectItem>
-                          <SelectItem value="rejected">Rejected</SelectItem>
-                          <SelectItem value="under_funding">Under Funding</SelectItem>
-                          <SelectItem value="funded">Funded</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Score (1-10)</label>
-                      <Select 
-                        value={selectedIdea.score?.toString() || ''} 
-                        onValueChange={(value) => updateField(selectedIdea.id, 'score', parseInt(value))}
-                        disabled={updating}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select score" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {[1,2,3,4,5,6,7,8,9,10].map(num => (
-                            <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Funding Amount</label>
-                      <Input
-                        type="number"
-                        value={selectedIdea.fundingAmount || ''}
-                        onChange={(e) => setSelectedIdea(prev => ({ ...prev, fundingAmount: parseInt(e.target.value) || 0 }))}
-                        placeholder="Enter funding amount"
-                        disabled={updating}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Tags</label>
-                      <Input
-                        value={selectedIdea.tags || ''}
-                        onChange={(e) => setSelectedIdea(prev => ({ ...prev, tags: e.target.value }))}
-                        placeholder="Enter tags (comma separated)"
-                        disabled={updating}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">Admin Note</label>
-                      <Textarea
-                        value={selectedIdea.note || ''}
-                        onChange={(e) => setSelectedIdea(prev => ({ ...prev, note: e.target.value }))}
-                        placeholder="Add your review notes here..."
-                        rows={4}
-                        disabled={updating}
-                      />
-                    </div>
-
-                    <Button 
-                      onClick={() => {
-                        updateField(selectedIdea.id, 'fundingAmount', selectedIdea.fundingAmount);
-                        updateField(selectedIdea.id, 'tags', selectedIdea.tags);
-                        updateField(selectedIdea.id, 'note', selectedIdea.note);
-                      }}
-                      disabled={updating}
-                      className="w-full mt-4"
-                    >
-                      {updating ? 'Updating...' : 'Update Changes'}
-                    </Button>
-
-                    {updateMessage && (
-                      <div className={`p-3 rounded-lg text-center font-medium mt-4 ${
-                        updateMessage.includes('Error') 
-                          ? 'bg-red-100 text-red-800' 
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {updateMessage}
+                {/* Bottom Section - Student Info & Idea Details + Admin Controls */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Left Side - Student & Idea Info */}
+                  <div className="lg:col-span-1 space-y-6">
+                    <div className="bg-gradient-to-br from-blue-500/5 to-blue-600/10 rounded-2xl p-6 border border-blue-500/20">
+                      <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-blue-500" />
+                        Student Information
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 p-3 bg-card/30 rounded-xl">
+                          <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-bold text-blue-600">{(selectedIdea.user?.username || 'U')[0].toUpperCase()}</span>
+                          </div>
+                          <div>
+                            <label className="text-xs font-medium text-muted-foreground">Student Name</label>
+                            <p className="text-foreground font-medium">{selectedIdea.user?.username || 'Unknown'}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-3 bg-card/30 rounded-xl">
+                          <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
+                            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                            </svg>
+                          </div>
+                          <div>
+                            <label className="text-xs font-medium text-muted-foreground">Email</label>
+                            <p className="text-foreground font-medium">{selectedIdea.user?.email || 'Unknown'}</p>
+                          </div>
+                        </div>
                       </div>
-                    )}
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-purple-500/5 to-purple-600/10 rounded-2xl p-6 border border-purple-500/20">
+                      <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                        <Edit3 className="w-5 h-5 text-purple-500" />
+                        Idea Details
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="p-4 bg-card/30 rounded-xl">
+                          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pitch</label>
+                          <p className="text-foreground mt-1 leading-relaxed">{selectedIdea.pitch}</p>
+                        </div>
+                        <div className="p-4 bg-card/30 rounded-xl">
+                          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Description</label>
+                          <p className="text-foreground mt-1 leading-relaxed">{selectedIdea.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Right Side - Admin Controls */}
+                  <div className="lg:col-span-2">
+                    <div className="bg-gradient-to-br from-orange-500/5 to-orange-600/10 rounded-2xl p-8 border border-orange-500/20 h-fit">
+                      <h3 className="text-2xl font-semibold text-foreground mb-8 flex items-center gap-2">
+                        <Save className="w-6 h-6 text-orange-500" />
+                        Admin Controls
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-yellow-500" />
+                            Status
+                          </label>
+                          <Select 
+                            value={selectedIdea.status || 'under_review'} 
+                            onValueChange={(value) => updateField(selectedIdea.id, 'status', value)}
+                            disabled={updating}
+                          >
+                            <SelectTrigger className="h-12 bg-card/50 border-border/50 hover:border-primary/50 transition-all">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="under_review">
+                                <div className="flex items-center gap-2">
+                                  <Clock className="w-4 h-4 text-yellow-500" />
+                                  Under Review
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="rejected">
+                                <div className="flex items-center gap-2">
+                                  <X className="w-4 h-4 text-red-500" />
+                                  Rejected
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="under_funding">
+                                <div className="flex items-center gap-2">
+                                  <DollarSign className="w-4 h-4 text-blue-500" />
+                                  Under Funding
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="funded">
+                                <div className="flex items-center gap-2">
+                                  <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  Funded
+                                </div>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-blue-500" />
+                            Score (1-10)
+                          </label>
+                          <Select 
+                            value={selectedIdea.score?.toString() || ''} 
+                            onValueChange={(value) => updateField(selectedIdea.id, 'score', parseInt(value))}
+                            disabled={updating}
+                          >
+                            <SelectTrigger className="h-12 bg-card/50 border-border/50 hover:border-primary/50 transition-all">
+                              <SelectValue placeholder="Select score" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {[1,2,3,4,5,6,7,8,9,10].map(num => (
+                                <SelectItem key={num} value={num.toString()}>
+                                  <div className="flex items-center gap-2">
+                                    <div className={`w-3 h-3 rounded-full ${
+                                      num <= 3 ? 'bg-red-500' :
+                                      num <= 6 ? 'bg-yellow-500' :
+                                      num <= 8 ? 'bg-blue-500' : 'bg-green-500'
+                                    }`} />
+                                    {num}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                            <DollarSign className="w-4 h-4 text-green-500" />
+                            Funding Amount
+                          </label>
+                          <div className="relative">
+                            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                            <Input
+                              type="number"
+                              value={selectedIdea.fundingAmount || ''}
+                              onChange={(e) => setSelectedIdea(prev => ({ ...prev, fundingAmount: parseInt(e.target.value) || 0 }))}
+                              placeholder="Enter funding amount"
+                              disabled={updating}
+                              className="h-12 pl-12 bg-card/50 border-border/50 hover:border-primary/50 transition-all"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                            <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                            Tags
+                          </label>
+                          <Input
+                            value={selectedIdea.tags || ''}
+                            onChange={(e) => setSelectedIdea(prev => ({ ...prev, tags: e.target.value }))}
+                            placeholder="Enter tags (comma separated)"
+                            disabled={updating}
+                            className="h-12 bg-card/50 border-border/50 hover:border-primary/50 transition-all"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-6 space-y-2">
+                        <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                          <Edit3 className="w-4 h-4 text-red-500" />
+                          Admin Note
+                        </label>
+                        <Textarea
+                          value={selectedIdea.note || ''}
+                          onChange={(e) => setSelectedIdea(prev => ({ ...prev, note: e.target.value }))}
+                          placeholder="Add your review notes here..."
+                          rows={4}
+                          disabled={updating}
+                          className="bg-card/50 border-border/50 hover:border-primary/50 transition-all resize-none"
+                        />
+                      </div>
+
+                      <Button 
+                        onClick={() => {
+                          updateField(selectedIdea.id, 'fundingAmount', selectedIdea.fundingAmount);
+                          updateField(selectedIdea.id, 'tags', selectedIdea.tags);
+                          updateField(selectedIdea.id, 'note', selectedIdea.note);
+                        }}
+                        disabled={updating}
+                        className="w-full mt-8 h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl text-lg"
+                      >
+                        {updating ? (
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            Updating...
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Save className="w-5 h-5" />
+                            Update Changes
+                          </div>
+                        )}
+                      </Button>
+
+                      {updateMessage && (
+                        <div className={`p-4 rounded-xl text-center font-medium animate-fade-up border mt-4 ${
+                          updateMessage.includes('Error') 
+                            ? 'bg-red-50 text-red-800 border-red-200' 
+                            : 'bg-green-50 text-green-800 border-green-200'
+                        }`}>
+                          <div className="flex items-center justify-center gap-2">
+                            {updateMessage.includes('Error') ? (
+                              <X className="w-5 h-5" />
+                            ) : (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                            {updateMessage}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
