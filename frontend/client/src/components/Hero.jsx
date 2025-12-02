@@ -65,7 +65,7 @@ const Hero = () => {
               <div className="text-sm text-muted-foreground">Startups Funded</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">$2M+</div>
+              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">₹2M+</div>
               <div className="text-sm text-muted-foreground">Investment Raised</div>
             </div>
             <div className="text-center">
