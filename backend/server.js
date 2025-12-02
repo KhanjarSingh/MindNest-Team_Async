@@ -82,5 +82,8 @@ app.use((err, req, res, next) => {
 });
 
 server.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`)
+    const baseUrl = process.env.NODE_ENV === 'production' 
+        ? process.env.SERVER_URL || `http://localhost:${port}`
+        : `http://localhost:${port}`;
+    console.log(`Server is running at ${baseUrl}`);
 })

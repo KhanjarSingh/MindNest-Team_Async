@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getAuthToken } from './authService';
+import { API_CONFIG } from '../config/api';
 
-const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://mindnest-team-async.onrender.com'}/api/v1/chat`;
+const API_BASE_URL = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CHAT}`;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

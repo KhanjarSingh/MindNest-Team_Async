@@ -26,7 +26,7 @@ export default function App(){
           <Route path="/signup" element={<SignUp />} />
 
           {/* Main Routes */}
-          <Route path="/" element={<ParticipantRoute><Home /></ParticipantRoute>} />
+          <Route path="/" element={<Home />} />
           <Route path="/about" element={<ParticipantRoute><About /></ParticipantRoute>} />
           <Route path="/hackathons" element={<ParticipantRoute><HackathonsPage /></ParticipantRoute>} />
           <Route path="/addidea" element={<ParticipantRoute><AddIdea /></ParticipantRoute>} />

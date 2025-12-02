@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Lightbulb, Plus, ExternalLink, Calendar } from 'lucide-react';
 import axios from 'axios';
 import { getAuthToken } from '../../services/authService';
+import { API_CONFIG } from '../../config/api';
 
 export default function MyIdeas() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function MyIdeas() {
         return;
       }
 
-      const response = await axios.get('http://localhost:3002/api/v1/ideas/user', {
+      const response = await axios.get(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.IDEAS}/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }
