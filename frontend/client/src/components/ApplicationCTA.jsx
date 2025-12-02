@@ -27,8 +27,10 @@ const ApplicationCTA = () => {
   const handleApplyNow = () => {
     if (isAuthenticated()) {
       navigate('/addidea');
+      window.scrollTo(0, 0);
     } else {
       navigate('/signup');
+      window.scrollTo(0, 0);
     }
   };
   
@@ -50,10 +52,10 @@ const ApplicationCTA = () => {
             </div>
 
             <div className="relative z-10 text-center">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-black">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-foreground">
                 Ready to Build the Future?
               </h2>
-              <p className="text-xl text-black/80 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Applications are now open for our next cohort. Join a community of ambitious
                 founders and turn your vision into reality.
               </p>
