@@ -1,477 +1,380 @@
-# System Architecture - Role-Based Authentication
+# MindNest - Team Async Architecture
 
-## 🏗️ Overall Architecture
+## System Overview
+
+MindNest is a full-stack web application built with a modern microservices-inspired architecture, featuring a React frontend, Node.js backend, and MySQL database. The system supports real-time communication through WebSocket connections and implements role-based access control for students and administrators.
+
+## Architecture Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        MINDNEST SYSTEM                          │
+│                        CLIENT LAYER                             │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────────┐          ┌──────────────────────────┐ │
-│  │   FRONTEND (React)  │          │   BACKEND (Node.js)      │ │
-│  │   Port: 3000        │◄────────►│   Port: 3002             │ │
-│  │                     │   HTTP   │                          │ │
-│  │  ┌────────────────┐ │  (JSON)  │ ┌────────────────────┐  │ │
-│  │  │   Vite Dev     │ │          │ │  Express Server    │  │ │
-│  │  │   Server       │ │          │ │  ├─ Auth Routes    │  │ │
-│  │  └────────────────┘ │          │ │  ├─ Services       │  │ │
-│  │                     │          │ │  └─ Controllers    │  │ │
-│  │  ┌────────────────┐ │          │ └────────────────────┘  │ │
-│  │  │   Components   │ │          │                          │ │
-│  │  │  ├─ SignUp     │ │          │ ┌────────────────────┐  │ │
-│  │  │  ├─ SignIn     │ │          │ │  Prisma ORM        │  │ │
-│  │  │  └─ Dashboards │ │          │ │  ├─ Schema         │  │ │
-│  │  └────────────────┘ │          │ │  ├─ Migrations     │  │ │
-│  │                     │          │ │  └─ Client         │  │ │
-│  │  ┌────────────────┐ │          │ └────────────────────┘  │ │
-│  │  │  localStorage  │ │          │                          │ │
-│  │  │  ├─ authToken  │ │          │ ┌────────────────────┐  │ │
-│  │  │  └─ userRole   │ │          │ │  MySQL Database    │  │ │
-│  │  └────────────────┘ │          │ │  └─ User table     │  │ │
-│  └─────────────────────┘          └──────────────────────────┘ │
-│                                                                 │
+│  React 18 + Vite                                               │
+│  ├── Components (UI/UX)                                        │
+│  ├── Pages (Routes)                                            │
+│  ├── Services (API Clients)                                    │
+│  └── State Management                                          │
 └─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🔐 Authentication Flow Diagram
-
-### Signup Flow
-```
+                                │
+                                │ HTTP/HTTPS + WebSocket
+                                ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│ SIGNUP FLOW: New User Registration                              │
+│                      APPLICATION LAYER                         │
+├─────────────────────────────────────────────────────────────────┤
+│  Node.js + Express                                             │
+│  ├── Routes (API Endpoints)                                    │
+│  ├── Controllers (Business Logic)                              │
+│  ├── Middlewares (Auth, CORS, etc.)                           │
+│  ├── Services (Data Processing)                                │
+│  └── Socket.io (Real-time Communication)                       │
 └─────────────────────────────────────────────────────────────────┘
-
-USER              FRONTEND              BACKEND              DATABASE
- │                   │                    │                    │
- │ Fills signup form │                    │                    │
- ├──────────────────►│                    │                    │
- │                   │ Validates form     │                    │
- │                   │ (email, password)  │                    │
- │                   │                    │                    │
- │                   │ POST /signup       │                    │
- │                   │ (role, secret)     │                    │
- │                   ├───────────────────►│                    │
- │                   │                    │ Validate secret    │
- │                   │                    │ (if ADMIN)         │
- │                   │                    │                    │
- │                   │                    │ Hash password      │
- │                   │                    │                    │
- │                   │                    │ Create user        │
- │                   │                    ├───────────────────►│
- │                   │                    │                    │ INSERT
- │                   │                    │                    │ User
- │                   │                    │◄───────────────────┤
- │                   │                    │                    │
- │                   │ JWT + Role        │                    │
- │                   │◄───────────────────┤                    │
- │                   │                    │                    │
- │ Show success      │                    │                    │
- │◄──────────────────┤                    │                    │
- │                   │ Store token+role   │                    │
- │                   │ in localStorage    │                    │
- │                   │                    │                    │
- │ Redirect to /signin                   │                    │
- │◄──────────────────┤                    │                    │
- │                   │                    │                    │
-```
-
-### Login Flow
-```
+                                │
+                                │ Prisma ORM
+                                ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│ LOGIN FLOW: Existing User Authentication                        │
+│                        DATA LAYER                              │
+├─────────────────────────────────────────────────────────────────┤
+│  MySQL Database                                                │
+│  ├── Users & Roles                                             │
+│  ├── Ideas & Submissions                                       │
+│  ├── Chat Messages                                             │
+│  └── Application Metadata                                      │
 └─────────────────────────────────────────────────────────────────┘
-
-USER              FRONTEND              BACKEND              DATABASE
- │                   │                    │                    │
- │ Enters email/pass │                    │                    │
- ├──────────────────►│                    │                    │
- │                   │ Validates form     │                    │
- │                   │                    │                    │
- │                   │ POST /login        │                    │
- │                   ├───────────────────►│                    │
- │                   │                    │ Query user         │
- │                   │                    ├───────────────────►│
- │                   │                    │◄───────────────────┤
- │                   │                    │ User data + role   │
- │                   │                    │                    │
- │                   │                    │ Compare passwords  │
- │                   │                    │ Generate JWT       │
- │                   │                    │                    │
- │                   │ JWT + Role        │                    │
- │                   │◄───────────────────┤                    │
- │                   │                    │                    │
- │                   │ Store token+role   │                    │
- │                   │ in localStorage    │                    │
- │                   │                    │                    │
- │ Check role        │                    │                    │
- ├──────┬───────────►│                    │                    │
- │      │            │ PARTICIPANT?       │                    │
- │      │            │ Redirect /dashboard                     │
- │      │            │                    │                    │
- │      │            │ ADMIN?             │                    │
- │      │            │ Redirect /admin-dashboard              │
- │      │            │                    │                    │
- │      └────────────┤                    │                    │
- │                   │                    │                    │
 ```
 
----
+## Technology Stack
 
-## 📊 Component Hierarchy
+### Frontend Technologies
+- **React 18**: Modern UI library with hooks and concurrent features
+- **Vite**: Fast build tool and development server
+- **Tailwind CSS**: Utility-first CSS framework
+- **Radix UI**: Accessible component primitives
+- **React Router**: Client-side routing
+- **Axios**: HTTP client for API requests
+- **Socket.io Client**: Real-time communication
+- **JWT Decode**: Token parsing and validation
 
-```
-App (App.jsx)
-├─ Routes
-│  ├─ /signin ──────────────► SignIn.jsx
-│  │                         ├─ loginUser()
-│  │                         └─ Role-based redirect
-│  │
-│  ├─ /signup ──────────────► SignUp.jsx
-│  │                         ├─ Role selector
-│  │                         ├─ Admin secret (conditional)
-│  │                         └─ signupUser()
-│  │
-│  ├─ /dashboard ───────────► StudentDashboard.jsx
-│  │                         (PARTICIPANT users)
-│  │
-│  └─ /admin-dashboard ─────► AdminDashboard.jsx
-│                            ├─ Admin-only content
-│                            └─ Logout button
+### Backend Technologies
+- **Node.js**: JavaScript runtime environment
+- **Express.js**: Web application framework
+- **Prisma ORM**: Type-safe database client
+- **Socket.io**: Real-time bidirectional communication
+- **JWT**: JSON Web Token authentication
+- **bcrypt**: Password hashing
+- **CORS**: Cross-origin resource sharing
 
-Services/
-├─ authService.js
-│  ├─ signupUser(data)
-│  ├─ loginUser(data)
-│  ├─ logoutUser()
-│  ├─ getAuthToken()
-│  ├─ getUserRole()
-│  ├─ isAuthenticated()
-│  └─ isAdmin()
-│
-└─ API Integration
-   └─ /api/v1/auth/
-      ├─ POST /signup
-      ├─ POST /login
-      └─ POST /logout
+### Database & Infrastructure
+- **MySQL**: Relational database management system
+- **Vercel**: Frontend hosting and deployment
+- **Render**: Backend hosting and deployment
 
-Backend/
-├─ Controllers
-│  └─ auth.controller.js
-│     ├─ signup()
-│     ├─ login()
-│     └─ logout()
-│
-├─ Services
-│  └─ auth.service.js
-│     ├─ createUser(role, secret)
-│     ├─ findUser(email)
-│     └─ comparePassword()
-│
-├─ Database
-│  └─ User (Prisma Model)
-│     ├─ id
-│     ├─ username
-│     ├─ email
-│     ├─ password (hashed)
-│     ├─ role (ENUM)
-│     └─ timestamps
-│
-└─ Middleware
-   └─ JWT validation (future)
-```
+## System Architecture
 
----
-
-## 🔄 Data Flow Diagram
-
-### Sign Up Request
-```
-Frontend Form Data
-        │
-        ├─► Browser validates
-        │   ├─ Email format
-        │   ├─ Password length ≥ 6
-        │   └─ Admin secret (if ADMIN)
-        │
-        ├─► Fetch POST /api/v1/auth/signup
-        │   └─ Body: { username, email, password, role, adminSecret }
-        │
-        ├─► Backend receives request
-        │   ├─ Validates admin secret against "admin123"
-        │   ├─ Hashes password with bcrypt
-        │   └─ Creates User in database
-        │
-        ├─► Backend generates JWT
-        │   └─ Payload: { userId, email, role, iat, exp }
-        │
-        ├─► Send response
-        │   ├─ token: JWT string
-        │   └─ user: { id, username, email, role }
-        │
-        └─► Frontend processes response
-            ├─ localStorage.setItem('authToken', token)
-            ├─ localStorage.setItem('userRole', user.role)
-            └─ Redirect to /signin
-```
-
----
-
-## 🗄️ Database Schema
+### 1. Frontend Architecture
 
 ```
-┌──────────────────────────────────────────┐
-│              User Table                  │
-├──────────────────────────────────────────┤
-│ id           INT (PK, Auto)              │
-│ username     VARCHAR(255) UNIQUE         │
-│ email        VARCHAR(255) UNIQUE         │
-│ password     VARCHAR(255) (Hashed)       │
-│ role         ENUM(                       │
-│              'PARTICIPANT',              │
-│              'ADMIN'                     │
-│              ) DEFAULT 'PARTICIPANT'     │
-│ is_verified  BOOLEAN DEFAULT FALSE       │
-│ created_at   TIMESTAMP DEFAULT NOW()     │
-│ last_login   TIMESTAMP NULL              │
-│ profile_json JSON NULL                   │
-├──────────────────────────────────────────┤
-│ Indexes:                                 │
-│ - id (PK)                                │
-│ - username (UNIQUE)                      │
-│ - email (UNIQUE)                         │
-└──────────────────────────────────────────┘
-
-Role Values (ENUM):
-├─ PARTICIPANT (Default for new users)
-└─ ADMIN (Requires secret: "admin123")
+src/
+├── components/
+│   ├── chat/                    # Real-time messaging components
+│   │   ├── ChatWindow.jsx       # Main chat interface
+│   │   └── ConversationList.jsx # Admin conversation management
+│   ├── layout/                  # Layout components
+│   ├── navbar/                  # Navigation components
+│   ├── ui/                      # Reusable UI components (Radix)
+│   └── [feature-components]/    # Feature-specific components
+├── pages/
+│   ├── Auth/                    # Authentication pages
+│   ├── studentDashboard/        # Student-specific pages
+│   ├── AdminDashboard.jsx       # Admin management interface
+│   ├── Connect.jsx              # Student-admin chat page
+│   └── Home.jsx                 # Landing page
+├── services/
+│   ├── authService.js           # Authentication API calls
+│   ├── chatService.js           # Chat API calls
+│   ├── ideaService.js           # Idea management API calls
+│   └── websocketService.js      # Real-time communication
+└── App.jsx                      # Main application component
 ```
 
----
-
-## 🔐 Security Layers
+### 2. Backend Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│     AUTHENTICATION SECURITY LAYERS      │
-└─────────────────────────────────────────┘
-
-Layer 1: Frontend Validation
-├─ Email format validation
-├─ Password length check (≥ 6 chars)
-├─ Admin secret field (conditional)
-└─ Error messages on invalid input
-
-Layer 2: Network Security
-├─ Relative URLs (no hardcoded IPs)
-├─ CORS configured for dev
-├─ HTTP (upgrade to HTTPS in production)
-└─ JSON request/response format
-
-Layer 3: Backend Validation
-├─ Email/username uniqueness check
-├─ Password strength validation
-├─ Admin secret validation ("admin123")
-├─ Role value validation (enum)
-└─ Input sanitization
-
-Layer 4: Password Security
-├─ Hashed with bcrypt (never plain text)
-├─ Salt rounds: 10 (configurable)
-├─ Comparison using bcrypt.compare()
-└─ Never transmitted in response
-
-Layer 5: Session Security
-├─ JWT token for stateless auth
-├─ Token expiration (configurable)
-├─ Role stored in JWT payload
-├─ Token in localStorage (vulnerable to XSS)
-└─ Token cleared on logout
-
-Layer 6: Database Security
-├─ Enum constraint on role field
-├─ Unique constraint on username/email
-├─ Foreign key constraints
-└─ Data persistence in MySQL
+backend/
+├── config/
+│   └── prisma.js                # Database configuration
+├── controllers/
+│   ├── auth.controller.js       # Authentication logic
+│   ├── chat.controller.js       # Chat message handling
+│   ├── idea.controller.js       # Idea management logic
+│   └── jwt.controller.js        # JWT token management
+├── middlewares/
+│   └── auth.middleware.js       # Authentication middleware
+├── routes/
+│   └── v1/
+│       ├── auth.routes.js       # Authentication endpoints
+│       ├── chat.route.js        # Chat endpoints
+│       ├── idea.routes.js       # Idea management endpoints
+│       └── index.js             # Route aggregation
+├── services/
+│   ├── auth.service.js          # Authentication business logic
+│   ├── chat.service.js          # Chat business logic
+│   └── idea.service.js          # Idea business logic
+├── prisma/
+│   ├── schema.prisma            # Database schema definition
+│   ├── migrations/              # Database migrations
+│   └── seed.js                  # Database seeding
+└── server.js                    # Application entry point
 ```
 
----
+## Database Schema
 
-## 🎯 Role-Based Access Control (RBAC)
+### Core Entities
 
-```
-┌─────────────────────────────────────────────────────────┐
-│              PARTICIPANT Role (Default)                 │
-├─────────────────────────────────────────────────────────┤
-│ • Can sign up without special permissions               │
-│ • Can login with username/password                      │
-│ • Access: /dashboard                                   │
-│ • Features: View profile, create ideas, chat           │
-│ • Admin functions: None                                │
-└─────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────┐
-│          ADMIN Role (Mentor/Incubator/Admin)            │
-├─────────────────────────────────────────────────────────┤
-│ • Requires admin secret during signup: "admin123"       │
-│ • Can login with username/password                      │
-│ • Access: /admin-dashboard                             │
-│ • Features: User management, analytics, settings       │
-│ • Admin functions: All dashboard features              │
-└─────────────────────────────────────────────────────────┘
-
-Future Implementation (Protected Routes):
-┌─────────────────────────────────────────────────────────┐
-│  Route Protection: Routes → Check role → Allow/Block    │
-├─────────────────────────────────────────────────────────┤
-│  /dashboard ───────► Check role = PARTICIPANT ─► Allow  │
-│  /admin-dashboard ─► Check role = ADMIN ───────► Allow  │
-└─────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📱 State Management
-
-### Frontend State
-```
-App Component
-├─ Authentication Service
-│  └─ localStorage
-│     ├─ authToken: JWT string
-│     └─ userRole: "PARTICIPANT" | "ADMIN"
-│
-SignUp Component
-├─ formData
-│  ├─ username: string
-│  ├─ email: string
-│  ├─ password: string
-│  ├─ role: "PARTICIPANT" | "ADMIN"
-│  └─ adminSecret: string
-├─ error: string
-├─ success: string
-└─ loading: boolean
-
-SignIn Component
-├─ formData
-│  ├─ email: string
-│  └─ password: string
-├─ error: string
-└─ loading: boolean
-
-AdminDashboard Component
-└─ Navigation state (via React Router)
-```
-
-### Backend State
-```
-Request Processing
-├─ Validate input data
-├─ Check database
-├─ Hash/compare passwords
-├─ Generate JWT token
-├─ Set role in response
-└─ Return status
-
-Database State
-└─ User records with persistent:
-   ├─ Credentials (email, hashed password)
-   ├─ Role (ENUM value)
-   └─ Metadata (created_at, last_login, etc)
-```
-
----
-
-## 🔄 Routing Map
-
-```
-Frontend Routes:
-├─ /                    → Home page
-├─ /about               → About page
-├─ /signin              → SignIn component
-├─ /signup              → SignUp component
-├─ /dashboard           → StudentDashboard (PARTICIPANT)
-├─ /admin-dashboard     → AdminDashboard (ADMIN)
-├─ /studentdashboard    → StudentDashboard
-├─ /studentdashboard/addidea → AddIdea component
-└─ /* (404)             → NotFound page
-
-Backend API Routes:
-└─ /api/v1/auth/
-   ├─ POST /signup     → Register new user
-   ├─ POST /login      → Authenticate user
-   └─ POST /logout     → Clear session
-```
-
----
-
-## 📊 Request/Response Examples
-
-### Signup Request (Admin)
-```
-POST /api/v1/auth/signup
-Content-Type: application/json
-
-{
-  "username": "john_admin",
-  "email": "john@admin.com",
-  "password": "secure123",
-  "role": "ADMIN",
-  "adminSecret": "admin123"
-}
-
-Response (201 Created):
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1,
-    "username": "john_admin",
-    "email": "john@admin.com",
-    "role": "ADMIN"
-  },
-  "message": "User created successfully"
+#### Users Table
+```sql
+User {
+  id               Int       @id @default(autoincrement())
+  username         String    @unique
+  email            String    @unique
+  password         String    (hashed)
+  roleId           Int       @default(0)
+  role             Role      @relation
+  is_verified      Boolean   @default(false)
+  created_at       DateTime  @default(now())
+  last_login       DateTime?
+  profile_json     Json?
+  receivedMessages Chat[]    @relation("ReceivedMessages")
+  sentMessages     Chat[]    @relation("SentMessages")
+  ideas            Idea[]
 }
 ```
 
-### Login Request
-```
-POST /api/v1/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@admin.com",
-  "password": "secure123"
-}
-
-Response (200 OK):
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1,
-    "username": "john_admin",
-    "email": "john@admin.com",
-    "role": "ADMIN"
-  },
-  "message": "Login successful"
+#### Roles Table
+```sql
+Role {
+  id    Int    @id
+  name  String @unique  // "STUDENT" | "ADMIN"
+  users User[]
 }
 ```
 
+#### Ideas Table
+```sql
+Idea {
+  id            String   @id @default(cuid())
+  title         String
+  pitch         String   @db.Text
+  description   String   @db.Text
+  demoLink      String?
+  pitchDeckUrl  String?
+  ppt_Url       String?
+  userId        Int?
+  user          User?    @relation
+  status        String   @default("under_review")
+  score         Int?
+  fundingAmount Int?
+  note          String?  @db.Text
+  tags          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+```
+
+#### Chat Table
+```sql
+Chat {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  receiver   User     @relation("ReceivedMessages")
+  sender     User     @relation("SentMessages")
+}
+```
+
+## API Architecture
+
+### RESTful API Design
+
+#### Authentication Endpoints
+```
+POST /api/v1/auth/signup     # User registration
+POST /api/v1/auth/login      # User authentication
+```
+
+#### Idea Management Endpoints
+```
+GET    /api/v1/ideas         # Get all ideas (admin)
+GET    /api/v1/ideas/user    # Get user's ideas
+POST   /api/v1/ideas         # Submit new idea
+PATCH  /api/v1/ideas/:id/status        # Update idea status
+PATCH  /api/v1/ideas/:id/score         # Update idea score
+PATCH  /api/v1/ideas/:id/fundingAmount # Update funding
+PATCH  /api/v1/ideas/:id/note          # Update admin notes
+PATCH  /api/v1/ideas/:id/tags          # Update idea tags
+```
+
+#### Chat Endpoints
+```
+POST /api/v1/chat/send                 # Send message
+GET  /api/v1/chat/history/:receiverId  # Get chat history
+GET  /api/v1/chat/conversations        # Get all conversations (admin)
+```
+
+### WebSocket Events
+
+#### Client → Server
+```javascript
+'join'        // Join user room: { userId }
+'sendMessage' // Send message: { receiverId, content }
+```
+
+#### Server → Client
+```javascript
+'receiveMessage' // New message: { message object }
+```
+
+## Security Architecture
+
+### Authentication & Authorization
+- **JWT Tokens**: Stateless authentication with expiration
+- **Role-Based Access Control**: Student vs Admin permissions
+- **Password Hashing**: bcrypt with salt rounds
+- **Route Protection**: Middleware-based authentication
+
+### Data Security
+- **Input Validation**: Server-side validation for all inputs
+- **SQL Injection Prevention**: Prisma ORM parameterized queries
+- **CORS Configuration**: Controlled cross-origin requests
+- **Environment Variables**: Sensitive data in environment files
+
+## Real-time Communication
+
+### WebSocket Architecture
+```
+Client                    Server                    Database
+  │                        │                         │
+  ├─ connect()            │                         │
+  │                       ├─ socket.join(userId)    │
+  │                       │                         │
+  ├─ sendMessage()        │                         │
+  │                       ├─ createMessage()        │
+  │                       │                        ├─ INSERT chat
+  │                       │                        │
+  │                       ├─ emit('receiveMessage') │
+  ├─ receiveMessage()     │                         │
+```
+
+### Message Flow
+1. User sends message via API endpoint
+2. Server validates and stores in database
+3. Server broadcasts message via WebSocket to recipient
+4. Real-time UI update on both sender and receiver sides
+
+## Deployment Architecture
+
+### Frontend Deployment (Vercel)
+```
+GitHub Repository
+       │
+       ├─ Push to main branch
+       │
+       ▼
+Vercel Build Pipeline
+       │
+       ├─ npm run build
+       ├─ Static file generation
+       │
+       ▼
+CDN Distribution
+       │
+       └─ Global edge locations
+```
+
+### Backend Deployment (Render)
+```
+GitHub Repository
+       │
+       ├─ Push to main branch
+       │
+       ▼
+Render Build Pipeline
+       │
+       ├─ npm install
+       ├─ Environment setup
+       │
+       ▼
+Container Deployment
+       │
+       ├─ Node.js runtime
+       ├─ Database connection
+       └─ WebSocket support
+```
+
+## Performance Considerations
+
+### Frontend Optimizations
+- **Code Splitting**: Route-based lazy loading
+- **Component Memoization**: React.memo for expensive components
+- **Bundle Optimization**: Vite's tree shaking and minification
+- **Image Optimization**: Responsive images and lazy loading
+
+### Backend Optimizations
+- **Database Indexing**: Optimized queries with proper indexes
+- **Connection Pooling**: Efficient database connection management
+- **Caching Strategy**: In-memory caching for frequently accessed data
+- **Rate Limiting**: API endpoint protection
+
+### Real-time Optimizations
+- **Connection Management**: Automatic reconnection handling
+- **Message Queuing**: Offline message delivery
+- **Room-based Broadcasting**: Targeted message delivery
+
+## Scalability Considerations
+
+### Horizontal Scaling
+- **Stateless Backend**: JWT-based authentication for load balancing
+- **Database Sharding**: User-based data partitioning
+- **CDN Integration**: Static asset distribution
+- **Microservices Migration**: Service separation for independent scaling
+
+### Monitoring & Logging
+- **Error Tracking**: Comprehensive error logging
+- **Performance Monitoring**: API response time tracking
+- **User Analytics**: Feature usage and engagement metrics
+- **Health Checks**: System availability monitoring
+
+## Development Workflow
+
+### Local Development
+1. **Database Setup**: MySQL with Prisma migrations
+2. **Environment Configuration**: Local environment variables
+3. **Concurrent Development**: Frontend and backend servers
+4. **Hot Reloading**: Vite for frontend, nodemon for backend
+
+### Testing Strategy
+- **Unit Testing**: Component and service testing
+- **Integration Testing**: API endpoint testing
+- **E2E Testing**: User workflow validation
+- **Real-time Testing**: WebSocket connection testing
+
+## Future Enhancements
+
+### Planned Features
+- **File Upload System**: Document and image sharing
+- **Notification System**: Real-time alerts and updates
+- **Advanced Analytics**: Detailed reporting dashboard
+- **Mobile Application**: React Native implementation
+
+### Technical Improvements
+- **Microservices Architecture**: Service decomposition
+- **Redis Integration**: Caching and session management
+- **GraphQL API**: Flexible data querying
+- **Docker Containerization**: Consistent deployment environments
+
 ---
 
-## 🎯 Feature Summary
-
-| Feature | PARTICIPANT | ADMIN |
-|---------|-------------|-------|
-| Signup | ✓ Easy | ✓ Requires secret |
-| Login | ✓ Email/password | ✓ Email/password |
-| Dashboard | /dashboard | /admin-dashboard |
-| View Profile | ✓ | ✓ |
-| Create Ideas | ✓ | ✓ |
-| Admin Features | ✗ | ✓ |
-| User Management | ✗ | ✓ (future) |
-| Analytics | ✗ | ✓ (future) |
-
----
-
-This architecture provides a scalable, secure, and user-friendly authentication system for the MindNest platform!
+This architecture supports the current feature set while providing a foundation for future scalability and enhancement. The modular design allows for independent development and deployment of different system components.
