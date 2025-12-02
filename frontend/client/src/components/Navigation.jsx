@@ -21,12 +21,11 @@ const Navigation = () => {
 
   const regularNavItems = [
     { label: "Home", href: "/", isRoute: true },
-    { label: "About", href: "/#about", isRoute: true },
-    { label: "Benefits", href: "/#benefits", isRoute: true },
+    { label: "About", href: "#about" },
+    { label: "Benefits", href: "#benefits" },
     { label: "Schemes", href: "/schemes", isRoute: true },
     { label: "Upcoming hackathons", href: "/hackathons", isRoute: true },
-    ...(authenticated ? [{ label: "My Ideas", href: "/my-ideas", isRoute: true }] : []),
-    { label: "Apply", href: "/#apply", isRoute: true },
+    { label: "Apply", href: "#apply" },
   ];
 
   const navItems = isAdmin() ? adminNavItems : regularNavItems;
@@ -37,14 +36,14 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <a href="#home" className="flex items-center space-x-2">
+            <button onClick={() => navigate('/')} className="flex items-center space-x-2">
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
                 <span className="text-2xl font-bold text-primary-foreground">S</span>
               </div>
               <span className="text-xl font-bold text-foreground">
                 Start<span className="text-primary italic">X</span>
               </span>
-            </a>
+            </button>
           </div>
 
           {/* Desktop Navigation */}
