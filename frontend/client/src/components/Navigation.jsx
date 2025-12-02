@@ -52,7 +52,7 @@ const Navigation = () => {
               item.isRoute ? (
                 <button
                   key={item.label}
-                  onClick={() => navigate(item.href)}
+                  onClick={() => { navigate(item.href); window.scrollTo(0, 0); }}
                   className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:scale-105"
                 >
                   {item.label}
@@ -97,7 +97,7 @@ const Navigation = () => {
                 item.isRoute ? (
                   <button
                     key={item.label}
-                    onClick={() => { navigate(item.href); setIsOpen(false); }}
+                    onClick={() => { navigate(item.href); window.scrollTo(0, 0); setIsOpen(false); }}
                     className="text-foreground/80 hover:text-primary transition-all duration-300 text-sm font-medium hover:translate-x-2 text-left"
                   >
                     {item.label}
