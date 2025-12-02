@@ -38,7 +38,7 @@ export const signupUser = async (data) => {
     return result;
   } catch (error) {
     if (error.message.includes('fetch')) {
-      throw new Error('Cannot connect to server. Please ensure the backend is running on port 3002.');
+      throw new Error('Cannot connect to server. Please ensure the backend is running.');
     }
     throw new Error(error.message || 'An error occurred during sign up');
   }
@@ -47,7 +47,6 @@ export const signupUser = async (data) => {
 
 export const loginUser = async (data) => {
   try {
-    console.log('Login request:', data);
     const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: {
@@ -56,9 +55,7 @@ export const loginUser = async (data) => {
       body: JSON.stringify(data),
     });
 
-    console.log('Response status:', response.status);
     const text = await response.text();
-    console.log('Response text:', text);
     let result = {};
 
     try {
@@ -83,7 +80,7 @@ export const loginUser = async (data) => {
     return result;
   } catch (error) {
     if (error.message.includes('fetch')) {
-      throw new Error('Cannot connect to server. Please ensure the backend is running on port 3002.');
+      throw new Error('Cannot connect to server. Please ensure the backend is running.');
     }
     throw new Error(error.message || 'An error occurred during login');
   }

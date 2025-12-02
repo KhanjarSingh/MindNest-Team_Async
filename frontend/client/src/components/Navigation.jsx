@@ -21,7 +21,13 @@ const Navigation = () => {
 
   const regularNavItems = [
     { label: "Home", href: "/", isRoute: true },
-    { label: "About", href: "#about" },
+    ...(authenticated ? [
+      { label: "Connect", href: "/connect", isRoute: true },
+      { label: "My Ideas", href: "/my-ideas", isRoute: true },
+      { label: "Submit Idea", href: "/addidea", isRoute: true }
+    ] : [
+      { label: "About", href: "#about" }
+    ]),
     { label: "Benefits", href: "#benefits" },
     { label: "Schemes", href: "/schemes", isRoute: true },
     { label: "Upcoming hackathons", href: "/hackathons", isRoute: true },

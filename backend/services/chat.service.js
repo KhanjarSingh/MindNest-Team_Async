@@ -92,7 +92,79 @@ const getMessages = async (senderId, receiverId) => {
     }
 };
 
+const getConversations = async (userId) => {
+    try {
+        // Get all chat messages and group by student (non-admin users)
+        const conversations = await prisma.chat.findMany({
+            include: {
+                sender: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        role: {
+                            select: {
+                                name: true
+                            }
+                        }
+                    }
+                },
+                receiver: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        role: {
+                            select: {
+                                name: true
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        // Group by student users (non-admin)
+        const conversationMap = new Map();
+        
+        conversations.forEach(message => {
+            let student = null;
+            let studentId = null;
+            
+            // Identify the student (non-admin) in the conversation
+            if (message.sender.role.name !== 'ADMIN') {
+                student = message.sender;
+                studentId = message.senderId;
+            } else if (message.receiver.role.name !== 'ADMIN') {
+                student = message.receiver;
+                studentId = message.receiverId;
+            }
+            
+            // Only include conversations involving students
+            if (student && !conversationMap.has(studentId)) {
+                conversationMap.set(studentId, {
+                    partnerId: studentId,
+                    partnerName: student.username,
+                    partnerEmail: student.email,
+                    lastMessage: message.content,
+                    lastMessageTime: message.createdAt,
+                    unreadCount: 0
+                });
+            }
+        });
+        
+        return Array.from(conversationMap.values());
+    } catch (error) {
+        console.error('Error fetching conversations:', error);
+        throw new Error(`Failed to fetch conversations: ${error.message}`);
+    }
+};
+
 module.exports = {
     createMessage,
-    getMessages
+    getMessages,
+    getConversations
 };

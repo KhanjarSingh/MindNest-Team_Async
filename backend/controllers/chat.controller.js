@@ -1,4 +1,4 @@
-const { createMessage, getMessages } = require('../services/chat.service');
+const { createMessage, getMessages, getConversations } = require('../services/chat.service');
 
 const sendMessage = async (req, res) => {
     const { receiverId, content } = req.body;
@@ -32,7 +32,26 @@ const getChatHistory = async (req, res) => {
     }
 };
 
+const getConversationsList = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const conversations = await getConversations(userId);
+        return res.status(200).json({
+            success: true,
+            data: conversations
+        });
+    } catch (error) {
+        console.error('Conversations error:', error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     sendMessage,
-    getChatHistory
+    getChatHistory,
+    getConversationsList
 };

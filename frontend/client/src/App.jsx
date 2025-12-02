@@ -13,6 +13,7 @@ import AddIdea from './pages/studentDashboard/SubmitYourIdea';
 import MyIdeas from './pages/studentDashboard/MyIdeas';
 import AdminRoute from './components/AdminRoute';
 import ParticipantRoute from './components/ParticipantRoute';
+import Connect from './pages/Connect';
 
 import { Toaster } from '@/components/ui/toaster';
 
@@ -30,6 +31,7 @@ export default function App(){
           <Route path="/hackathons" element={<ParticipantRoute><HackathonsPage /></ParticipantRoute>} />
           <Route path="/addidea" element={<ParticipantRoute><AddIdea /></ParticipantRoute>} />
           <Route path="/my-ideas" element={<ParticipantRoute><MyIdeas /></ParticipantRoute>} />
+          <Route path="/connect" element={<ParticipantRoute><Connect /></ParticipantRoute>} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/schemes" element={<Schemes />} />
