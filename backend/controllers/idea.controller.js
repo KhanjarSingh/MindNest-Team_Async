@@ -23,7 +23,7 @@ const handleCreateIdea = async (req, res) => {
     const newIdea = await ideaService.createIdea(ideaData, userId);
 
     console.log('Idea created successfully:', newIdea);
-    res.status(201).json({ message: 'Idea created successfully!', data: newIdea });
+    res.status(201).json({ success: true, message: 'Idea created successfully!', idea: newIdea, data: newIdea });
   } catch (error) {
     console.error('=== ERROR in handleCreateIdea ===');
     console.error('Error object:', error);

@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import axios from 'axios';
+import { ideaService } from '../services/ideaService';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -25,10 +25,10 @@ export default function AdminDashboard() {
   const fetchIdeas = async () => {
     try {
       console.log('Fetching ideas from API...');
-      const response = await axios.get('https://mindnest-team-async.onrender.com/api/v1/ideas');
-      console.log('API Response:', response.data);
-      console.log('Ideas found:', response.data.data?.length || 0);
-      setIdeas(response.data.data || []);
+      const response = await ideaService.getAllIdeas();
+      console.log('API Response:', response);
+      console.log('Ideas found:', response.data?.length || 0);
+      setIdeas(response.data || []);
     } catch (error) {
       console.error('Error fetching ideas:', error);
       console.error('Error details:', error.response?.data);
@@ -43,17 +43,35 @@ export default function AdminDashboard() {
   const updateField = async (ideaId, field, value) => {
     setUpdating(true);
     try {
-      await axios.patch(`http://localhost:3002/api/v1/ideas/${ideaId}/${field}`, {
-        [field]: value
-      });
+      let response;
+      switch (field) {
+        case 'status':
+          response = await ideaService.updateIdeaStatus(ideaId, value);
+          break;
+        case 'score':
+          response = await ideaService.updateIdeaScore(ideaId, value);
+          break;
+        case 'fundingAmount':
+          response = await ideaService.updateIdeaFunding(ideaId, value);
+          break;
+        case 'note':
+          response = await ideaService.updateIdeaNote(ideaId, value);
+          break;
+        case 'tags':
+          response = await ideaService.updateIdeaTags(ideaId, value);
+          break;
+        default:
+          throw new Error(`Unknown field: ${field}`);
+      }
       
-      // Update local state
+      // Update local state with the returned data
+      const updatedIdea = response.data;
       setIdeas(prev => prev.map(idea => 
-        idea.id === ideaId ? { ...idea, [field]: value } : idea
+        idea.id === ideaId ? updatedIdea : idea
       ));
       
       if (selectedIdea && selectedIdea.id === ideaId) {
-        setSelectedIdea(prev => ({ ...prev, [field]: value }));
+        setSelectedIdea(updatedIdea);
       }
       
       setUpdateMessage('Updated successfully!');
