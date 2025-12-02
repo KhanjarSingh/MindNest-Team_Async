@@ -5,10 +5,10 @@ const partners = [
   { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" },
   { name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" },
   { name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" },
+  { name: "Linux", logo: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" },
   { name: "Tesla", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg" },
   { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" },
   { name: "Intel", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7d/Intel_logo_%282006-2020%29.svg" },
-  { name: "Adobe", logo: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Adobe_Corporate_Logo.svg" },
 ];
 
 const HiringPartners = () => {
@@ -24,12 +24,14 @@ const HiringPartners = () => {
           </h3>
         </div>
 
-        <div className="relative">
-          <div className="flex animate-scroll">
-            {[...partners, ...partners].map((partner, index) => (
+        <div className="relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-background to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-background to-transparent z-10" />
+          <div className="flex animate-scroll" style={{width: 'max-content'}}>
+            {[...partners, ...partners, ...partners, ...partners].map((partner, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 mx-4 md:mx-8 w-24 h-12 md:w-40 md:h-20 flex items-center justify-center transition-all duration-300"
+                className="flex-shrink-0 mx-4 md:mx-8 w-32 h-16 md:w-40 md:h-20 flex items-center justify-center"
               >
                 <img
                   src={partner.logo}
@@ -48,11 +50,11 @@ const HiringPartners = () => {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(-25%);
           }
         }
         .animate-scroll {
-          animation: scroll 15s linear infinite;
+          animation: scroll 20s linear infinite;
         }
         .animate-scroll:hover {
           animation-play-state: paused;
