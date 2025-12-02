@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getAuthToken } from './authService';
 
-const API_BASE_URL = 'https://mindnest-team-async.onrender.com/api/v1/ideas';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'https://mindnest-team-async.onrender.com'}/api/v1/ideas`;
 
 // Create axios instance with default config
 const apiClient = axios.create({

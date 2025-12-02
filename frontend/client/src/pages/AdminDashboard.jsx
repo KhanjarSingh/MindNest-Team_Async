@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import Navigation from '../components/Navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, Clock, Eye, Edit3, Save, X } from 'lucide-react';
@@ -7,7 +8,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ideaService } from '../services/ideaService';
+import { getAuthToken } from '../services/authService';
+import ConversationList from '../components/chat/ConversationList';
+import ChatWindow from '../components/chat/ChatWindow';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -17,9 +22,22 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     fetchIdeas();
+    
+    // Get current user ID from token
+    const token = getAuthToken();
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setCurrentUserId(decoded.id);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
   }, []);
 
   const fetchIdeas = async () => {
@@ -494,9 +512,9 @@ export default function AdminDashboard() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground mb-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
-              Review Ideas &
+              Admin Dashboard
               <br />
-              <span className="text-primary italic">Manage Submissions</span>
+              <span className="text-primary italic">Manage & Connect</span>
             </h1>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 max-w-4xl mx-auto animate-fade-up" style={{ animationDelay: "0.4s" }}>
@@ -524,79 +542,118 @@ export default function AdminDashboard() {
       <section className="py-20 bg-background/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-4 mb-8">
-              <Input
-                placeholder="Search by title or student name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1"
-              />
+            <Tabs defaultValue="ideas" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="ideas">Ideas Management</TabsTrigger>
+                <TabsTrigger value="chat">User Conversations</TabsTrigger>
+              </TabsList>
               
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="under_review">Under Review</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                  <SelectItem value="under_funding">Under Funding</SelectItem>
-                  <SelectItem value="funded">Funded</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Button onClick={fetchIdeas} disabled={loading}>
-                {loading ? 'Loading...' : 'Refresh'}
-              </Button>
-            </div>
+              <TabsContent value="ideas" className="mt-8">
+                <div className="flex flex-col md:flex-row gap-4 mb-8">
+                  <Input
+                    placeholder="Search by title or student name..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="flex-1"
+                  />
+                  
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="under_review">Under Review</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                      <SelectItem value="under_funding">Under Funding</SelectItem>
+                      <SelectItem value="funded">Funded</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Button onClick={fetchIdeas} disabled={loading}>
+                    {loading ? 'Loading...' : 'Refresh'}
+                  </Button>
+                </div>
 
-            <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden">
-              {loading ? (
-                <div className="text-center py-8">Loading ideas...</div>
-              ) : filteredIdeas.length === 0 ? (
-                <div className="text-center py-8">No ideas found.</div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Student</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Score</TableHead>
-                      <TableHead>Funding</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredIdeas.map((idea) => (
-                      <TableRow 
-                        key={idea.id} 
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => setSelectedIdea(idea)}
-                      >
-                        <TableCell className="font-medium">{idea.title}</TableCell>
-                        <TableCell>{idea.user?.username || 'Unknown'}</TableCell>
-                        <TableCell>{idea.user?.email || 'Unknown'}</TableCell>
-                        <TableCell>{new Date(idea.createdAt).toLocaleDateString()}</TableCell>
-                        <TableCell>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            idea.status === 'under_review' ? 'bg-yellow-100 text-yellow-800' :
-                            idea.status === 'funded' ? 'bg-green-100 text-green-800' :
-                            idea.status === 'under_funding' ? 'bg-blue-100 text-blue-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {(idea.status || 'under_review').replace('_', ' ')}
-                          </span>
-                        </TableCell>
-                        <TableCell>{idea.score || '-'}</TableCell>
-                        <TableCell>{idea.fundingAmount ? `$${idea.fundingAmount.toLocaleString()}` : '-'}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </div>
+                <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden">
+                  {loading ? (
+                    <div className="text-center py-8">Loading ideas...</div>
+                  ) : filteredIdeas.length === 0 ? (
+                    <div className="text-center py-8">No ideas found.</div>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Student</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Score</TableHead>
+                          <TableHead>Funding</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredIdeas.map((idea) => (
+                          <TableRow 
+                            key={idea.id} 
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => setSelectedIdea(idea)}
+                          >
+                            <TableCell className="font-medium">{idea.title}</TableCell>
+                            <TableCell>{idea.user?.username || 'Unknown'}</TableCell>
+                            <TableCell>{idea.user?.email || 'Unknown'}</TableCell>
+                            <TableCell>{new Date(idea.createdAt).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                idea.status === 'under_review' ? 'bg-yellow-100 text-yellow-800' :
+                                idea.status === 'funded' ? 'bg-green-100 text-green-800' :
+                                idea.status === 'under_funding' ? 'bg-blue-100 text-blue-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {(idea.status || 'under_review').replace('_', ' ')}
+                              </span>
+                            </TableCell>
+                            <TableCell>{idea.score || '-'}</TableCell>
+                            <TableCell>{idea.fundingAmount ? `$${idea.fundingAmount.toLocaleString()}` : '-'}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="chat" className="mt-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-1">
+                    <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 h-96 overflow-y-auto">
+                      <ConversationList 
+                        onSelectConversation={setSelectedConversation}
+                        selectedConversation={selectedConversation}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="lg:col-span-2">
+                    {selectedConversation ? (
+                      <ChatWindow 
+                        receiverId={selectedConversation.partnerId}
+                        receiverName={selectedConversation.partnerName}
+                        currentUserId={currentUserId}
+                      />
+                    ) : (
+                      <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 h-96 flex items-center justify-center">
+                        <div className="text-center">
+                          <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                          <p className="text-muted-foreground">Select a conversation to start chatting</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </section>

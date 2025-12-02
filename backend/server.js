@@ -9,7 +9,7 @@ const socket = require('socket.io');
 dotenv.config()
 
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3002
 server = http.createServer(app);
 const io = socket(server, {
     cors: {
@@ -29,31 +29,44 @@ app.use(cors({
 
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-    console.log('Request body:', req.body);
     next();
 });
 
 app.use('/api', routes);
 
+const { createMessage } = require('./services/chat.service');
+
 io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+    
     socket.on('join', (userId) => {
-        socket.join(userId);
+        socket.userId = userId;
+        socket.join(userId.toString());
+        console.log(`User ${userId} joined room`);
     });
 
     socket.on('sendMessage', async (data) => {
         const { receiverId, content } = data;
         const senderId = socket.userId;
 
+        if (!senderId) {
+            console.error('No sender ID found');
+            return;
+        }
+
         try {
             const message = await createMessage(senderId, receiverId, content);
-            io.to(receiverId).emit('receiveMessage', message);
+            // Send to receiver
+            io.to(receiverId.toString()).emit('receiveMessage', message);
+            // Also send back to sender for confirmation
+            socket.emit('receiveMessage', message);
         } catch (error) {
             console.error('Socket message error:', error);
         }
     });
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        console.log('User disconnected:', socket.id);
     });
 });
 
