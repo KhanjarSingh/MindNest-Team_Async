@@ -1,6 +1,6 @@
 
 
-const API_BASE_URL = 'https://mindnest-team-async.onrender.com/api/v1/auth'
+const API_BASE_URL = 'http://localhost:3002/api/v1/auth'
 
 
 export const signupUser = async (data) => {
