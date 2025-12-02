@@ -87,7 +87,7 @@ export default function Schemes() {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center pt-20 pb-10 overflow-hidden">
+      <section className="relative flex items-center justify-center pt-32 pb-10 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-top bg-no-repeat" style={{ backgroundImage: 'url("/Home-Bg.jpg")' }}></div>
         
         <div className="absolute inset-0 overflow-hidden">
