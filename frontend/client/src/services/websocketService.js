@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client';
+import { API_CONFIG } from '../config/api';
 
 class WebSocketService {
   constructor() {
@@ -11,7 +12,7 @@ class WebSocketService {
       this.disconnect();
     }
 
-    this.socket = io(import.meta.env.VITE_API_URL || 'https://mindnest-team-async.onrender.com', {
+    this.socket = io(API_CONFIG.BASE_URL, {
       transports: ['websocket'],
       autoConnect: true
     });

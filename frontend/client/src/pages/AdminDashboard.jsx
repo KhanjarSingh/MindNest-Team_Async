@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Navigation from '../components/Navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, Clock, Eye, Edit3, Save, X } from 'lucide-react';
+import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, Clock, Eye, Edit3, Save, X, MessageCircle } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
