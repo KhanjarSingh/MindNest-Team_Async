@@ -43,9 +43,6 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <button onClick={() => navigate('/')} className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary-foreground">S</span>
-              </div>
               <span className="text-xl font-bold text-foreground">
                 Start<span className="text-primary italic">X</span>
               </span>
