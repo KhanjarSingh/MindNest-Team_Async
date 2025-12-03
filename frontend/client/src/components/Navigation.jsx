@@ -44,7 +44,7 @@ const Navigation = () => {
           <div className="flex-shrink-0">
             <button onClick={() => navigate('/')} className="flex items-center space-x-2">
               <span className="text-xl font-bold text-foreground">
-                Start<span className="text-primary italic">X</span>
+                Mind<span className="text-primary italic">Nest</span>
               </span>
             </button>
           </div>
