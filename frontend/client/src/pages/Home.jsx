@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import About from "../components/About";
 import Benefits from "../components/Benefits";
 import HiringPartners from "../components/HiringPartners";
+import Mentors from "../components/Mentors";
 import ApplicationCTA from "../components/ApplicationCTA";
 import Footer from "../components/Footer";
 import { isAuthenticated, getAuthToken } from '../services/authService';
@@ -133,6 +134,7 @@ export default function Home() {
       <About />
       <Benefits />
       <HiringPartners />
+      <Mentors />
       <ApplicationCTA />
       
       {authenticated && userIdeas.length > 0 && (
