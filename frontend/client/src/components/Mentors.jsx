@@ -20,7 +20,11 @@ const Mentors = () => {
   };
 
   const getVisibleMentors = () => {
-    return [mentors[currentIndex]];
+    const visible = [];
+    for (let i = 0; i < 3; i++) {
+      visible.push(mentors[(currentIndex + i) % mentors.length]);
+    }
+    return visible;
   };
 
   return (
@@ -44,8 +48,8 @@ const Mentors = () => {
           </button>
 
           <div className="px-12 md:px-16">
-            <div className="md:grid md:grid-cols-3 md:gap-6">
-            {getVisibleMentors().map((mentor, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {getVisibleMentors().slice(0, window.innerWidth >= 768 ? 3 : 1).map((mentor, index) => (
               <div
                 key={index}
                 className="bg-card rounded-2xl border border-border p-6 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
