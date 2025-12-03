@@ -33,7 +33,7 @@ const SimpleNavigation = () => {
                 <span className="text-2xl font-bold text-primary-foreground">S</span>
               </div>
               <span className="text-xl font-bold text-foreground">
-                Start<span className="text-primary italic">X</span>
+                Mind<span className="text-primary italic">Nest</span>
               </span>
             </button>
           </div>
