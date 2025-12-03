@@ -13,7 +13,7 @@ const Footer = () => {
                 <span className="text-xl font-bold text-primary-foreground">S</span>
               </div>
               <span className="text-lg font-bold text-foreground">
-                Mind<span className="text-primary italic">X</span>
+                Mind<span className="text-primary italic">Nest</span>
               </span>
             </div>
             <p className="text-xs text-muted-foreground max-w-xs">
