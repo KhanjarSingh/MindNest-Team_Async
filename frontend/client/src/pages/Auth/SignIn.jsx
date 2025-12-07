@@ -60,11 +60,13 @@ export default function SignIn() {
 
     try {
       const result = await loginUser(formData);
+      console.log('Login result:', result);
+      console.log('User role:', result.user?.role);
 
-      if (result.user?.role === 'ADMIN') {
+      if (result.user?.role === 'ADMIN' || result.user?.role === 'INSTRUCTOR') {
         navigate('/admin-dashboard');
       } else {
-        navigate('/');
+        navigate('/addidea');
       }
     } catch (err) {
       setError(err.message);
